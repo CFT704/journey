@@ -46,7 +46,7 @@
 }
 *,*::before,*::after{box-sizing:border-box}
 html,body{margin:0;background:#1c1b19}
-body{font-size:15px;line-height:1.55;font-weight:400;color:var(--color-text);font-family:var(--font-body);-webkit-text-size-adjust:100%}
+body{font-size:15px;line-height:1.55;font-weight:400;color:var(--color-text);font-family:var(--font-body);-webkit-text-size-adjust:100%;font-variant-numeric:lining-nums}
 h1,h2{font-family:var(--font-heading);font-weight:var(--font-heading-weight);line-height:1.12;letter-spacing:-0.015em;margin:0}
 p{margin:0}
 a{color:var(--color-accent-700);text-underline-offset:3px}
@@ -85,7 +85,7 @@ input[type=date]{-webkit-appearance:none;appearance:none;background:transparent}
   </div>
 
   <section style="background:#1c1b19;color:#efece5;position:relative;overflow:hidden;padding:calc(env(safe-area-inset-top, 0px) + 40px) 24px 36px;text-align:center">
-    <div id="bgDays" aria-hidden="true" style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:var(--font-heading);font-weight:400;font-size:340px;line-height:1;color:var(--color-accent);opacity:.07;font-feature-settings:'tnum';pointer-events:none;user-select:none;-webkit-user-select:none"></div>
+    <div id="bgDays" aria-hidden="true" style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:var(--font-heading);font-weight:400;font-size:340px;line-height:1;color:var(--color-accent);opacity:.07;font-feature-settings:'lnum','tnum';pointer-events:none;user-select:none;-webkit-user-select:none"></div>
     <div style="position:relative;max-width:420px;margin:0 auto;display:flex;flex-direction:column;align-items:center;gap:14px;animation:jjfade .7s ease both">
       <svg width="58" height="58" viewBox="0 0 120 120" aria-label="Jimmy's Journey mark">
         <g fill="none" stroke="var(--color-accent)" stroke-width="5" stroke-linecap="round">
@@ -99,16 +99,16 @@ input[type=date]{-webkit-appearance:none;appearance:none;background:transparent}
       </svg>
       <h1 style="font-size:40px;line-height:1.1;color:#f3f0e9">Jimmy&rsquo;s Journey</h1>
       <div style="display:flex;flex-direction:column;gap:2px">
-        <div id="bigDays" style="font-family:var(--font-heading);font-weight:400;font-size:132px;line-height:.95;font-feature-settings:'tnum';color:#f3f0e9"></div>
+        <div id="bigDays" style="font-family:var(--font-heading);font-weight:400;font-size:132px;line-height:.95;font-feature-settings:'lnum','tnum';color:#f3f0e9"></div>
         <div id="dayLine" style="font-size:15px;letter-spacing:.2em;text-transform:uppercase;color:rgba(243,240,233,.75)">days without a drink</div>
       </div>
-      <div id="clock" style="font-family:var(--font-heading);font-size:30px;font-feature-settings:'tnum';color:var(--color-accent-300);letter-spacing:.06em"></div>
+      <div id="clock" style="font-family:var(--font-heading);font-size:30px;font-feature-settings:'lnum','tnum';color:var(--color-accent-300);letter-spacing:.06em"></div>
       <div id="celebCard" style="display:none;border:1px solid var(--color-accent);border-radius:var(--radius-md);padding:12px 20px;margin-top:4px">
         <div style="font-size:12px;letter-spacing:.22em;text-transform:uppercase;color:var(--color-accent);margin-bottom:4px">Today is a milestone</div>
         <div id="celebText" style="font-family:var(--font-heading);font-size:27px;color:#f3f0e9"></div>
       </div>
       <div style="width:100%;max-width:320px;margin-top:10px">
-        <div style="display:flex;justify-content:space-between;font-size:12.5px;letter-spacing:.08em;text-transform:uppercase;color:rgba(243,240,233,.55);margin-bottom:6px;font-feature-settings:'tnum'">
+        <div style="display:flex;justify-content:space-between;font-size:12.5px;letter-spacing:.08em;text-transform:uppercase;color:rgba(243,240,233,.55);margin-bottom:6px;font-feature-settings:'lnum','tnum'">
           <span id="sinceLabel">Sober since July 16, 2026</span><span id="nextLabel"></span>
         </div>
         <div style="height:2px;background:rgba(243,240,233,.15)"><div id="nextBar" style="height:100%;background:var(--color-accent);width:0%"></div></div>
@@ -132,7 +132,7 @@ input[type=date]{-webkit-appearance:none;appearance:none;background:transparent}
     <section class="card" style="padding:var(--space-6);text-align:center;display:flex;flex-direction:column;gap:8px">
       <div style="font-size:13px;letter-spacing:.22em;text-transform:uppercase;color:var(--color-accent-700)">Money kept in your pocket</div>
       <div id="savedView" style="display:none;flex-direction:column;gap:8px">
-        <div id="saved" style="font-family:var(--font-heading);font-size:58px;line-height:1;font-feature-settings:'tnum'"></div>
+        <div id="saved" style="font-family:var(--font-heading);font-size:58px;line-height:1;font-feature-settings:'lnum','tnum'"></div>
         <div style="font-size:15px;color:var(--color-neutral-600)">at <span id="rateLabel"></span> a week, since day one</div>
         <button id="editRateBtn" class="btn btn-ghost" style="align-self:center">Change weekly amount</button>
       </div>
@@ -269,10 +269,10 @@ input[type=date]{-webkit-appearance:none;appearance:none;background:transparent}
       var top = document.createElement('div');
       top.style.cssText = 'display:flex;align-items:baseline;justify-content:space-between;gap:10px';
       var when = document.createElement('div');
-      when.style.cssText = "font-size:13px;letter-spacing:.16em;text-transform:uppercase;color:var(--color-accent-700);font-feature-settings:'tnum'";
+      when.style.cssText = "font-size:13px;letter-spacing:.16em;text-transform:uppercase;color:var(--color-accent-700);font-feature-settings:'lnum','tnum'";
       when.textContent = name(d);
       var tag = document.createElement('div');
-      tag.style.cssText = "flex:none;font-size:13px;font-feature-settings:'tnum';color:var(--color-neutral-500)";
+      tag.style.cssText = "flex:none;font-size:13px;font-feature-settings:'lnum','tnum';color:var(--color-neutral-500)";
       top.appendChild(when); top.appendChild(tag);
 
       var titleEl = document.createElement('div');
@@ -350,7 +350,7 @@ input[type=date]{-webkit-appearance:none;appearance:none;background:transparent}
         var dateCol = document.createElement('div');
         dateCol.style.cssText = 'flex:none;text-align:center;min-width:50px';
         var dayNum = document.createElement('div');
-        dayNum.style.cssText = "font-family:var(--font-heading);font-size:23px;line-height:1;font-feature-settings:'tnum'";
+        dayNum.style.cssText = "font-family:var(--font-heading);font-size:23px;line-height:1;font-feature-settings:'lnum','tnum'";
         dayNum.textContent = v.dayNum;
         var mon = document.createElement('div');
         mon.style.cssText = 'font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--color-accent-700)';
@@ -363,7 +363,7 @@ input[type=date]{-webkit-appearance:none;appearance:none;background:transparent}
         head.style.cssText = 'font-size:17px';
         head.textContent = v.headline;
         var sub = document.createElement('div');
-        sub.style.cssText = "font-size:14px;color:var(--color-neutral-500);font-feature-settings:'tnum'";
+        sub.style.cssText = "font-size:14px;color:var(--color-neutral-500);font-feature-settings:'lnum','tnum'";
         sub.textContent = v.sub;
         mid.appendChild(head); mid.appendChild(sub);
 
@@ -438,6 +438,15 @@ input[type=date]{-webkit-appearance:none;appearance:none;background:transparent}
   // ---- the once-a-second heartbeat ----
   var lastDays = -1, lastCeleb = '__init__', lastOccKey = null;
 
+  // The ghosted background number caps at 340px but shrinks so 3- and 4-digit
+  // day counts still fit the screen instead of running off both edges.
+  function fitBg() {
+    var digits = String($('bgDays').textContent || '').length || 1;
+    var fit = (window.innerWidth - 16) / (digits * 0.5);
+    $('bgDays').style.fontSize = Math.max(120, Math.min(340, Math.floor(fit))) + 'px';
+  }
+  window.addEventListener('resize', fitBg);
+
   function tick() {
     var now = Date.now();
     var elapsed = Math.max(0, now - QUIT.getTime());
@@ -450,6 +459,7 @@ input[type=date]{-webkit-appearance:none;appearance:none;background:transparent}
       $('bigDays').textContent = days;
       $('bgDays').textContent = days;
       $('dayLine').textContent = (days === 1 ? 'day' : 'days') + ' without a drink';
+      fitBg();
     }
 
     var isMilestone = days > 0 && allSteps.indexOf(days) >= 0;
