@@ -29,7 +29,7 @@ site. There is nothing to build or bundle.
 
 ## Working with `index.html`
 
-The file is ~562 lines but ~286 KB, because four `@font-face` rules and two icon
+The file is ~560 lines but ~185 KB, because two `@font-face` rules and two icon
 `<link>`s carry base64 payloads on single enormous lines.
 
 **Do not `Read` the whole file** — it blows the token limit. Read by range
@@ -39,13 +39,13 @@ instead. Structure as of this writing:
 | --- | --- |
 | 1–12 | `<head>` meta: viewport with `viewport-fit=cover`, `apple-mobile-web-app-*`, `theme-color`, `apple-touch-icon` |
 | 13–14 | Base64 icon data URIs (~26 KB each) — **skip when reading** |
-| 15–20 | `<style>` open + four `@font-face` blocks (~50 KB each) — **skip when reading** |
-| 21–85 | Design tokens (`:root` custom properties), base element styles, `.btn`/`.input`/`.card` primitives, keyframes, `.unit*` counter styles |
-| 87–198 | Body markup: JS-warning banner, hero section, healing timeline mount, money card, occasions section, install hint, mailto footer |
-| 199–560 | The single `<script>` IIFE |
+| 15–18 | `<style>` open + two Lora `@font-face` blocks (~50 KB each) — **skip when reading** |
+| 19–83 | Design tokens (`:root` custom properties), base element styles, `.btn`/`.input`/`.card` primitives, keyframes, `.unit*` counter styles |
+| 85–196 | Body markup: JS-warning banner, hero section, healing timeline mount, money card, occasions section, install hint, mailto footer |
+| 197–558 | The single `<script>` IIFE |
 
-To read code without the blobs: `sed -n '21,85p' index.html`, `sed -n '87,198p'`,
-`sed -n '199,562p'`. To inspect a blob line safely, pipe through `cut -c1-120`.
+To read code without the blobs: `sed -n '19,83p' index.html`, `sed -n '85,196p'`,
+`sed -n '197,560p'`. To inspect a blob line safely, pipe through `cut -c1-120`.
 
 ### Script organization (inside one `'use strict'` IIFE)
 
@@ -75,8 +75,9 @@ specifically so the app renders true offline forever. Never add a CDN link, a
 inline `style="…"` attributes on the markup and in `el.style.cssText` in JS.
 Follow the existing split rather than introducing a new pattern.
 
-**Numerals must be lining and tabular.** Cormorant Garamond's old-style figures
-once let a `9`'s descender run through the label beneath it. Every element that
+**Numerals must be lining and tabular.** The old heading face defaulted to
+old-style figures, and a `9`'s descender ran through the label beneath it. That
+face is gone, but the belt-and-braces rule stays: every element that
 shows a number sets `font-feature-settings:'lnum','tnum'`, and `body` sets
 `font-variant-numeric:lining-nums`. Any new numeric element needs the same.
 
@@ -103,9 +104,12 @@ work should be similarly guarded rather than rebuilding DOM each second.
   because only one was updated. Verify with:
   `sed -n '13p' index.html | sed 's/.*base64,//; s/">$//' | base64 -d | md5sum` — it
   must match `md5sum icon.png`.
-- **`QUIT` is the single source of truth for day zero** (`new Date(2026, 6, 16)`,
+- **`QUIT` is the single source of truth for day zero** (`new Date(2026, 6, 15)`,
   local midnight; the month is 0-indexed). The "Sober since …" label is derived
-  from it, not hardcoded.
+  from it at boot — but the markup also carries a matching static fallback in
+  `#sinceLabel`, which is what shows in a non-executing preview. Change both
+  together. Remember the direction: moving `QUIT` **earlier** raises the day
+  count.
 - **Hidden timeline entries are intentional.** Rows in `H` with a trailing `true`
   are withheld for later reveal; flip that entry's flag (or `SHOW_EXTENDED`) to
   show them. Don't delete them as dead data.
@@ -116,10 +120,11 @@ work should be similarly guarded rather than rebuilding DOM each second.
 - **`#jsWarn`** is visible in markup and hidden by the last line of the script. It
   is what the user sees when viewing a non-executing preview, so it must stay the
   final statement of the IIFE.
-- **Cormorant Garamond is embedded but no longer referenced** (headings moved to
-  Palatino in the Evergreen re-theme); Lora is the body face. Removing the two
-  unused `@font-face` lines would cut ~100 KB, but that is a deliberate change to
-  propose, not a silent cleanup.
+- **Only Lora is embedded.** Headings use the `--font-heading` stack, which starts
+  at Palatino — a system face on iOS, so it costs nothing to ship. Cormorant
+  Garamond was embedded through the Evergreen re-theme after nothing referenced
+  it anymore, and was removed (~101 KB). If a heading ever needs a face iOS does
+  not have, it has to be embedded as base64 like Lora — never linked.
 
 ## Previewing changes
 
