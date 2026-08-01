@@ -43,6 +43,14 @@
   --color-accent2-700:#8d3f1e;
   --font-heading:Palatino,"Palatino Linotype","Book Antiqua",ui-serif,Georgia,serif;
   --font-heading-weight:600;
+  /* The wordmark and the two J's of the mark only — deliberately not the rest of the
+     headings. Cochin is a system face on iOS, so it costs nothing to ship, and its J
+     drops well below the line with the long open hook Palatino's J never had. It is
+     kept off --font-heading because that token also sets every figure in the app (the
+     132px day count, the counter row, the money), and an old-style face can carry
+     old-style figures with no lining alternates — which is the exact bug the
+     lnum/tnum rule exists to prevent. Words here, numbers stay on Palatino. */
+  --font-mark:Cochin,Palatino,"Palatino Linotype","Book Antiqua",ui-serif,Georgia,serif;
   --font-body:"Lora",ui-serif,Georgia,serif;
   --space-1:4.6px;
   --space-2:9.2px;
@@ -107,19 +115,23 @@ input[type=date]{-webkit-appearance:none;appearance:none;background:transparent}
     <div id="bgDays" aria-hidden="true" style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:var(--font-heading);font-weight:400;font-size:340px;line-height:1;color:var(--color-accent);opacity:.07;font-feature-settings:'lnum','tnum';pointer-events:none;user-select:none;-webkit-user-select:none"></div>
     <div style="position:relative;max-width:420px;margin:0 auto;display:flex;flex-direction:column;align-items:center;gap:14px;animation:jjfade .7s ease both">
       <svg width="118" height="118" viewBox="0 0 120 120" aria-label="Jimmy's Journey mark">
-        <!-- Two capital J's set in the heading face itself, not drawn — so the mark is
+        <!-- Two capital J's set in the wordmark face itself, not drawn — so the mark is
              literally the same letterform as the J in "Jimmy's Journey" below it, and
-             follows the same fallback chain if Palatino is ever missing. The second J is
+             follows the same fallback chain if Cochin is ever missing. The second J is
              mirrored about x=60 (translate+scale), which keeps the pair exactly symmetric
-             whatever font resolves and whatever its advance width turns out to be. -->
-        <g fill="var(--color-accent)" style="font-family:var(--font-heading);font-weight:var(--font-heading-weight);font-size:82px">
-          <text x="60" y="78" text-anchor="end">J</text>
-          <text x="60" y="78" text-anchor="end" transform="translate(120,0) scale(-1,1)">J</text>
+             whatever font resolves and whatever its advance width turns out to be.
+             Both are anchored at MARK_X rather than 60, so each J's advance runs 5 units
+             past the centre line and the pair closes up by 10 — enough to shut the gap
+             Cochin's right side bearing leaves between the two top flags. Raising this
+             number tightens the pair; 60 is the old, untightened position. -->
+        <g fill="var(--color-accent)" style="font-family:var(--font-mark);font-weight:var(--font-heading-weight);font-size:82px">
+          <text x="65" y="78" text-anchor="end">J</text>
+          <text x="65" y="78" text-anchor="end" transform="translate(120,0) scale(-1,1)">J</text>
         </g>
         <g fill="var(--color-accent)"><circle cx="60" cy="14" r="4.4"></circle><circle cx="42" cy="12" r="3.4"></circle><circle cx="78" cy="12" r="3.4"></circle></g>
         <line x1="24" y1="107" x2="96" y2="107" stroke="var(--color-accent)" stroke-width="2.8"></line>
       </svg>
-      <h1 style="font-size:43px;line-height:1.1;color:#eef3ec">Jimmy&rsquo;s Journey</h1>
+      <h1 style="font-family:var(--font-mark);font-size:43px;line-height:1.1;color:#eef3ec">Jimmy&rsquo;s Journey</h1>
       <div style="display:flex;flex-direction:column;gap:2px">
         <div id="bigDays" style="font-family:var(--font-heading);font-weight:400;font-size:132px;line-height:.95;font-feature-settings:'lnum','tnum';color:#eef3ec"></div>
         <div id="dayLine" style="font-size:17px;letter-spacing:.2em;text-transform:uppercase;color:rgba(238,243,236,.78)">days</div>

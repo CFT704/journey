@@ -162,6 +162,25 @@ rebuilding DOM each second.
   Garamond was embedded through the Evergreen re-theme after nothing referenced
   it anymore, and was removed (~101 KB). If a heading ever needs a face iOS does
   not have, it has to be embedded as base64 like Lora — never linked.
+- **`--font-mark` is words-only, and that is deliberate.** Cochin (also a system
+  face on iOS, so also free) sets the `<h1>` wordmark and the two J's of the SVG
+  mark — nothing else. It is kept out of `--font-heading` because that token also
+  sets every figure in the app: the 132px day count, the six-unit counter row, the
+  money figures. Cochin is an old-style face and may carry old-style figures with
+  no lining alternates, in which case `font-feature-settings:'lnum'` has nothing to
+  switch to and the descending `9` bug comes back. Put words in Cochin; leave
+  numbers on Palatino. Same rule for any display face added later.
+- **The two J's of the mark are anchored at 65, not 60.** Both `<text>` elements
+  sit at `x="65"` with `text-anchor="end"`, so each J's advance runs five units past
+  the centre line and the pair closes up by ten — enough to shut the gap Cochin's
+  right side bearing leaves between the two top flags. Raise the number to tighten,
+  drop it to 60 for the old untightened spacing. Past roughly 74 the stems touch and
+  the pair stops reading as two letters. Both texts must carry the same value or the
+  mirror stops being symmetric.
+- **`icon.png` is a raster of the mark and is currently a Palatino render**, taken
+  before the wordmark moved to Cochin. It is internally consistent (all three copies
+  match) but no longer matches the SVG mark letterform. Regenerating it needs a
+  device that actually has Cochin — this container does not.
 
 ## Previewing changes
 
