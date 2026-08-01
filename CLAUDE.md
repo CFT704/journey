@@ -198,14 +198,24 @@ rebuilding DOM each second.
 - **The mark and wordmark are set in regular, not `--font-heading-weight`.** The SVG
   `<g>` and the `<h1>` both hard-code `font-weight:400`; everything else on the page
   still takes 600 from the token. Changing the token will not move them, by design.
-- **`icon.png` is a hand-drawn likeness of the Cochin mark, not a render of it.**
-  Cochin is an Apple font and is not on this container, so the icon cannot be
-  produced from the real letterform here. The paths were traced against two renders
-  taken on a device that does have it, anchoring on the rule (`x 8→112 at y=107`) to
-  fix the scale at 4.115px per unit; the working file is not in the repo, but the
-  proportions are recorded in the commit that introduced it. It matches the app's
-  mark in anatomy and weight, not glyph-for-glyph. If it ever needs redrawing, get a
-  fresh reference from the phone first — do not trace it from the old icon.
+- **`icon.png` is a genuine Cochin render and could not have been made here.**
+  Cochin is Apple's, it is not on this container, and drawing a stand-in was tried
+  and rejected — it is not close enough. The file was produced on the owner's phone
+  and uploaded to the repo through GitHub's web UI. **That route only replaces
+  `icon.png`; it cannot touch the two base64 copies at lines 13–14**, so after any
+  such upload the three fall out of sync and the embedded pair must be regenerated:
+
+  ```python
+  import base64
+  b64 = base64.b64encode(open('icon.png','rb').read()).decode()
+  lines = open('index.html', encoding='utf-8').read().split('\n')
+  lines[12] = '<link rel="apple-touch-icon" href="data:image/png;base64,' + b64 + '">'
+  lines[13] = '<link rel="icon" type="image/png" href="data:image/png;base64,' + b64 + '">'
+  open('index.html','w',encoding='utf-8').write('\n'.join(lines))
+  ```
+
+  If the mark's spacing, weight or face ever changes again, the icon has to be
+  re-cut on a device with Cochin — there is no way to do it from here.
 
 ## Previewing changes
 
