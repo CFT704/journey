@@ -170,13 +170,23 @@ rebuilding DOM each second.
   no lining alternates, in which case `font-feature-settings:'lnum'` has nothing to
   switch to and the descending `9` bug comes back. Put words in Cochin; leave
   numbers on Palatino. Same rule for any display face added later.
-- **The two J's of the mark are anchored at 65, not 60.** Both `<text>` elements
-  sit at `x="65"` with `text-anchor="end"`, so each J's advance runs five units past
-  the centre line and the pair closes up by ten — enough to shut the gap Cochin's
-  right side bearing leaves between the two top flags. Raise the number to tighten,
-  drop it to 60 for the old untightened spacing. Past roughly 74 the stems touch and
-  the pair stops reading as two letters. Both texts must carry the same value or the
-  mirror stops being symmetric.
+- **The two J's of the mark are anchored at 73, not 60.** Both `<text>` elements
+  sit at `x="73"` with `text-anchor="end"`, so each J's advance runs thirteen units
+  past the centre line and the pair closes up by twenty-six. Raise to tighten, drop
+  to 60 for the old untightened spacing; past about 74 the stems collide. Both texts
+  must carry the same value or the mirror stops being symmetric. Note the knock-on:
+  tightening narrows the pair, but the rule under it is a fixed `x1=24 x2=96`, so the
+  tighter the J's the further that rule overhangs them on both sides.
+- **Never crop the mark's viewBox to the letters.** It stays `0 0 120 120`, and the
+  dead band at the top left behind by the three dots is dead on purpose. Where the
+  cap line falls is a property of whichever face resolves — measured at y=5.5 in the
+  last fallback of the chain against roughly y=24 in Palatino — so a viewBox tuned to
+  one font shears the tops off the letters in another. Make the mark bigger by
+  scaling the element (it is sized in CSS, `max-width`, so it also shrinks on a 320px
+  phone), never by tightening the box.
+- **The mark and wordmark are set in regular, not `--font-heading-weight`.** The SVG
+  `<g>` and the `<h1>` both hard-code `font-weight:400`; everything else on the page
+  still takes 600 from the token. Changing the token will not move them, by design.
 - **`icon.png` is a raster of the mark and is currently a Palatino render**, taken
   before the wordmark moved to Cochin. It is internally consistent (all three copies
   match) but no longer matches the SVG mark letterform. Regenerating it needs a
