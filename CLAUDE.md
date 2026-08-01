@@ -140,6 +140,17 @@ dressed when he gets back to it. Don't "optimise" that into a visibility check.
   the one green thing that is not a filling bar: which tab you are on is not
   progress, so it takes neither side of the split, and green is simply what the
   pine band already uses.
+- **Nothing is dimmed to mean "not selected".** The tab labels shipped at 60%
+  opacity over the pine — 5.9:1, a pass on paper and reported as hard to read on
+  the actual phone at arm's length. They are now solid `#e4ebe2` (12.7:1) whether
+  or not they are the tab he is on. That is the general rule here: this app is
+  read by a 65-year-old holding it at arm's length, so faded type is never the
+  device for signalling state. Because the labels are all equally bright, the
+  selected tab is marked three other ways — `--color-accent-300` (9.9:1, the tone
+  the counter row already uses on pine), a 3px `--color-accent` rule across the
+  top of the cell, and a `rgba(143,191,122,.14)` wash behind it. The rule is 3px
+  and transparent on every tab rather than added on selection, so nothing shifts
+  by a pixel when he switches.
 - **Which tab he is on is not saved, by design.** The app opens on Home every
   time — that is where the counter is, and where the urge timer and the phone
   numbers are. There is no new `localStorage` key for it and there should not be.
@@ -215,6 +226,14 @@ dressed when he gets back to it. Don't "optimise" that into a visibility check.
   `calc(env(safe-area-inset-bottom, 0px) + 98px)` — the bar's 58px plus the 40px the
   page ended on before. Change `.tab`'s `min-height` and that number moves with it, or
   the last line of every tab hides behind the bar.
+- **The safe-area inset is carried by `.tab`, not by `#tabBar`.** It appears twice, in
+  the cell's `min-height` and its `padding-bottom`, and the two have to move together:
+  the padding keeps the label clear of the home indicator, and the min-height grows by
+  the same amount so the 58px of tap area survives beneath it. It sits on the cells
+  because the selected cell has a background — put the inset back on the bar and that
+  wash stops short of the bottom of the screen, leaving a strip of bare pine under the
+  lit tab. `env()` cannot be faked in a desktop browser; to check the notched case,
+  inject a stylesheet substituting a literal (34px is the usual value).
 - **Never crop the mark's viewBox to the letters.** It stays `0 0 120 120`, and the
   dead band at the top left behind by the three dots is dead on purpose. Where the
   cap line falls is a property of whichever face resolves — measured at y=5.5 in the

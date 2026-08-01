@@ -106,15 +106,32 @@ input[type=date]{-webkit-appearance:none;appearance:none;background:transparent}
    the Twelve Steps cell stacks its two words and the three single-word cells have to sit
    level with that pair rather than hang off the top of it. 58px tall before the safe-area
    inset — comfortably over the 44px tap minimum without eating a screen's worth of list. */
+/* The safe-area inset is carried by the cells, not by the bar around them, so the
+   selected cell's wash runs all the way to the bottom edge of the screen instead of
+   stopping short of the home indicator and leaving a strip of bare pine under it. Both
+   halves have to move together: the padding keeps the label off the indicator, and the
+   min-height grows by the same amount so the 58px of tap area survives underneath it. */
 .tab{flex:1 1 0;min-width:0;display:flex;flex-direction:column;align-items:center;justify-content:center;
-  min-height:58px;padding:8px 3px;background:transparent;border:0;border-top:2px solid transparent;
-  cursor:pointer;font-family:var(--font-heading);font-weight:var(--font-heading-weight);font-size:15px;
-  line-height:1.15;color:rgba(238,243,236,.6);-webkit-tap-highlight-color:transparent}
-/* Which tab you are on is not progress, so it takes neither side of the green/copper
-   split by that rule — it takes green because green is what the pine band already uses. */
-.tab[aria-selected="true"]{color:var(--color-accent);border-top-color:var(--color-accent)}
+  min-height:calc(58px + env(safe-area-inset-bottom, 0px));
+  padding:8px 3px calc(8px + env(safe-area-inset-bottom, 0px));
+  background:transparent;border:0;border-top:3px solid transparent;
+  cursor:pointer;font-family:var(--font-heading);font-weight:var(--font-heading-weight);font-size:16px;
+  line-height:1.15;color:#e4ebe2;-webkit-tap-highlight-color:transparent}
+/* The unselected labels are near-solid, not a faded tint. They started at 60% opacity
+   over the pine, which measured 5.9:1 — a pass on paper and genuinely hard to read on
+   a phone held at arm's length, which is the only test that matters here. Solid #e4ebe2
+   is 12.7:1. Type on this app is never dimmed to signal "not the thing you tapped".
+   Which tab you are on is not progress, so it takes neither side of the green/copper
+   split by that rule — it takes green because green is what the pine band already uses.
+   With the labels this bright, colour alone can no longer carry the selected state, so
+   it is marked three ways: the accent-300 green (9.9:1, the same tone the counter row
+   already uses on pine), a 3px rule across the top of the cell, and a soft green wash
+   behind it. The rule is 3px transparent on every tab, not added on selection, so
+   nothing shifts by a pixel when he switches. */
+.tab[aria-selected="true"]{color:var(--color-accent-300);border-top-color:var(--color-accent);
+  background:rgba(143,191,122,.14)}
 .tabNum{font-feature-settings:'lnum','tnum'}
-@media (max-width:359px){.tab{font-size:13px}}
+@media (max-width:359px){.tab{font-size:14px}}
 </style>
 </head>
 <body>
@@ -475,7 +492,7 @@ input[type=date]{-webkit-appearance:none;appearance:none;background:transparent}
        Steps — each get a screen of their own, so nothing has to be scrolled past to
        reach anything else. Fixed to the bottom because that is where his thumb already
        is, and pine so it reads as the same piece of furniture as the hero. -->
-  <div id="tabBar" role="tablist" aria-label="Sections" style="position:fixed;left:0;right:0;bottom:0;z-index:10;display:flex;background:#16281f;border-top:1px solid rgba(238,243,236,.16);padding-bottom:env(safe-area-inset-bottom, 0px)">
+  <div id="tabBar" role="tablist" aria-label="Sections" style="position:fixed;left:0;right:0;bottom:0;z-index:10;display:flex;background:#16281f;border-top:1px solid rgba(238,243,236,.16)">
     <button type="button" role="tab" class="tab" id="tab-home" aria-controls="panel-home" aria-selected="true"><span>Home</span></button>
     <button type="button" role="tab" class="tab" id="tab-money" aria-controls="panel-money" aria-selected="false"><span>Savings</span></button>
     <button type="button" role="tab" class="tab" id="tab-miles" aria-controls="panel-miles" aria-selected="false"><span>Milestones</span></button>
