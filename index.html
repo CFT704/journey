@@ -122,7 +122,7 @@ input[type=date]{-webkit-appearance:none;appearance:none;background:transparent}
       <h1 style="font-size:43px;line-height:1.1;color:#eef3ec">Jimmy&rsquo;s Journey</h1>
       <div style="display:flex;flex-direction:column;gap:2px">
         <div id="bigDays" style="font-family:var(--font-heading);font-weight:400;font-size:132px;line-height:.95;font-feature-settings:'lnum','tnum';color:#eef3ec"></div>
-        <div id="dayLine" style="font-size:17px;letter-spacing:.2em;text-transform:uppercase;color:rgba(238,243,236,.78)">days without a drink</div>
+        <div id="dayLine" style="font-size:17px;letter-spacing:.2em;text-transform:uppercase;color:rgba(238,243,236,.78)">days</div>
       </div>
       <div id="clock" style="display:flex;width:100%;max-width:360px;gap:0">
         <div class="unit"><div class="unitNum" id="uY">0</div><div class="unitLbl">Years</div></div>
@@ -152,9 +152,13 @@ input[type=date]{-webkit-appearance:none;appearance:none;background:transparent}
       <div style="text-align:center;margin-bottom:var(--space-4)">
         <div style="font-size:14px;letter-spacing:.2em;text-transform:uppercase;color:var(--color-accent2-700)">The healing, as it happens</div>
         <h2 style="font-size:35px;margin:6px 0 0">Your body, mending itself</h2>
-        <p style="font-size:16px;color:var(--color-neutral-600);margin:8px 0 0;text-wrap:pretty">Tap any one to read it. These come from research on groups of people &mdash; yours may run faster or slower.</p>
+        <p style="font-size:16px;color:var(--color-neutral-600);margin:8px 0 0;text-wrap:pretty">Tap any one to read it. Everything you have reached is marked in copper. These come from research on groups of people &mdash; yours may run faster or slower.</p>
       </div>
       <div id="healthList" style="display:flex;flex-direction:column"></div>
+      <!-- Everything already reached always shows. What is still ahead starts at two
+           entries so the list reads as a next step rather than a wall; this button
+           adds three more each time it is tapped. -->
+      <button id="moreHealth" class="btn btn-secondary btn-block" style="display:none;margin-top:var(--space-3)"></button>
     </section>
 
     <div class="hr"></div>
@@ -184,12 +188,7 @@ input[type=date]{-webkit-appearance:none;appearance:none;background:transparent}
     <div class="hr"></div>
 
     <section style="display:flex;flex-direction:column;gap:var(--space-3)">
-      <div style="text-align:center">
-        <div style="font-size:14px;letter-spacing:.2em;text-transform:uppercase;color:var(--color-accent2-700)">Milestones you have earned</div>
-        <h2 style="font-size:35px;margin:6px 0 0">Your chips</h2>
-      </div>
-      <div id="chipGrid" style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:6px"></div>
-      <div class="card" id="nextChipCard" style="padding:var(--space-4);gap:10px;margin-top:6px;border-color:var(--color-accent2-600)">
+      <div class="card" id="nextChipCard" style="padding:var(--space-4);gap:10px;border-color:var(--color-accent2-600)">
         <div style="font-size:14px;letter-spacing:.14em;text-transform:uppercase;color:var(--color-accent2-700)">Working towards</div>
         <div id="nextChipName" style="font-family:var(--font-heading);font-size:26px;line-height:1.2"></div>
         <div style="height:16px;border-radius:8px;background:var(--color-neutral-200);overflow:hidden;box-shadow:inset 0 1px 2px rgba(26,37,28,.10)">
@@ -211,6 +210,68 @@ input[type=date]{-webkit-appearance:none;appearance:none;background:transparent}
       </div>
       <div class="hr"></div>
     </div>
+
+    <!-- The Twelve Steps. The step text itself is A.A.'s, credited below the list and
+         linked back to aa.org; the short plain-English note under each one was written
+         for this app. Marking a step is stored locally in jj_steps and never leaves
+         the phone — it is his own record, not a score anyone else sees. -->
+    <section style="display:flex;flex-direction:column;gap:var(--space-3)">
+      <div style="text-align:center">
+        <div style="font-size:14px;letter-spacing:.2em;text-transform:uppercase;color:var(--color-accent2-700)">One at a time, in order</div>
+        <h2 style="font-size:35px;margin:6px 0 0">The Twelve Steps</h2>
+        <p style="font-size:16px;color:var(--color-neutral-600);margin:8px 0 0;text-wrap:pretty">Tap a step to read it in plain words, and mark it when you&rsquo;ve worked it. Nobody does these to a schedule &mdash; most people do them with a sponsor, and step four onwards is much easier with one.</p>
+      </div>
+
+      <div class="card" style="padding:var(--space-4);gap:10px;border-color:var(--color-accent2-600)">
+        <div style="font-size:14px;letter-spacing:.14em;text-transform:uppercase;color:var(--color-accent2-700)">Where you are</div>
+        <div id="stepNow" style="font-family:var(--font-heading);font-size:26px;line-height:1.2"></div>
+        <div style="height:16px;border-radius:8px;background:var(--color-neutral-200);overflow:hidden;box-shadow:inset 0 1px 2px rgba(26,37,28,.10)">
+          <div id="stepBar" style="height:100%;border-radius:8px;width:0%;background:var(--color-accent2-600);transition:width .4s ease"></div>
+        </div>
+        <div id="stepSub" style="font-size:17px;color:var(--color-neutral-600);font-feature-settings:'lnum','tnum'"></div>
+      </div>
+
+      <div id="stepList" style="display:flex;flex-direction:column"></div>
+
+      <p style="font-size:15px;line-height:1.6;color:var(--color-neutral-500);margin:2px 0 0;text-wrap:pretty">The Twelve Steps are the work of Alcoholics Anonymous World Services, Inc., and are reproduced here for personal use only.</p>
+      <a class="card" href="https://www.aa.org/the-twelve-steps" style="text-decoration:none;color:inherit;padding:var(--space-4);gap:4px">
+        <div style="font-family:var(--font-heading);font-size:24px;color:var(--color-accent-700)">Read them on aa.org</div>
+        <div style="font-size:16px;color:var(--color-neutral-600)">The steps in full, from A.A. itself, alongside the Twelve Traditions. Tap to open.</div>
+      </a>
+    </section>
+
+    <div class="hr"></div>
+
+    <!-- Three things to reach for in the moment: a timer that outlasts a craving, the
+         four-question check, and the prayer. Only the timer holds any state, and it
+         lives in memory — nothing here is saved or counted. -->
+    <section style="display:flex;flex-direction:column;gap:var(--space-3)">
+      <div style="text-align:center">
+        <div style="font-size:14px;letter-spacing:.2em;text-transform:uppercase;color:var(--color-accent2-700)">For a hard hour</div>
+        <h2 style="font-size:35px;margin:6px 0 0">Things to reach for</h2>
+      </div>
+
+      <div class="card" style="padding:var(--space-4);gap:10px;border-color:var(--color-accent)">
+        <div style="font-family:var(--font-heading);font-size:24px">Ride it out</div>
+        <p style="font-size:17px;line-height:1.6;color:var(--color-neutral-700);text-wrap:pretty">A craving is a wave, not a straight line. Most peak and fall inside a quarter of an hour. Start the timer and just get to the end of it.</p>
+        <div id="urgeClock" style="display:none;font-family:var(--font-heading);font-size:58px;line-height:1;text-align:center;color:var(--color-accent-700);font-feature-settings:'lnum','tnum'"></div>
+        <div id="urgeSay" style="display:none;font-size:17px;line-height:1.6;color:var(--color-neutral-700);text-align:center;text-wrap:pretty"></div>
+        <button id="urgeBtn" class="btn btn-primary btn-block">Start 15 minutes</button>
+      </div>
+
+      <div class="card" style="padding:var(--space-4);gap:8px">
+        <div style="font-family:var(--font-heading);font-size:24px">Run the four checks</div>
+        <p style="font-size:17px;line-height:1.6;color:var(--color-neutral-700);text-wrap:pretty">Before you decide what a bad hour means, check whether it is really one of these four. It very often is.</p>
+        <div id="haltList" style="display:flex;flex-direction:column;gap:8px;margin-top:2px"></div>
+      </div>
+
+      <div class="card" style="padding:var(--space-4);gap:6px;text-align:center">
+        <div style="font-size:14px;letter-spacing:.14em;text-transform:uppercase;color:var(--color-neutral-500)">Said at the end of most meetings</div>
+        <p style="font-family:var(--font-heading);font-style:italic;font-size:23px;line-height:1.45;color:var(--color-neutral-700);margin:4px 0 0;text-wrap:pretty">God grant me the serenity to accept the things I cannot change, courage to change the things I can, and wisdom to know the difference.</p>
+      </div>
+    </section>
+
+    <div class="hr"></div>
 
     <section style="display:flex;flex-direction:column;gap:var(--space-3)">
       <div style="text-align:center">
@@ -235,6 +296,16 @@ input[type=date]{-webkit-appearance:none;appearance:none;background:transparent}
         <p style="font-size:17px;color:var(--color-neutral-700);margin:8px 0 0;text-wrap:pretty">You don&rsquo;t have to be in trouble to call. Wanting to talk is reason enough.</p>
       </div>
 
+      <!-- His own numbers first: sponsor, the people from the rooms, family. Stored in
+           jj_people on this phone only. Put above the helplines deliberately — the
+           number you actually ring is the one belonging to someone who knows you. -->
+      <div id="peopleList" style="display:none;flex-direction:column;gap:var(--space-3)"></div>
+      <div style="display:flex;gap:8px;align-items:center">
+        <input id="personName" class="input" type="text" placeholder="Name (e.g. Sponsor)" style="flex:1;min-width:0;font-size:17px">
+        <input id="personTel" class="input" type="tel" inputmode="tel" placeholder="Phone" style="flex:none;width:152px;font-size:17px">
+      </div>
+      <button id="addPersonBtn" class="btn btn-secondary btn-block">Add someone to call</button>
+
       <a class="card" href="tel:17043324387" style="text-decoration:none;color:inherit;border-color:var(--color-accent);padding:var(--space-4);gap:4px">
         <div style="font-family:var(--font-heading);font-size:24px;color:var(--color-accent-700)">Charlotte A.A. &mdash; 24 hour line</div>
         <div style="font-size:26px;font-feature-settings:'lnum','tnum'">704&#8209;332&#8209;4387</div>
@@ -258,9 +329,33 @@ input[type=date]{-webkit-appearance:none;appearance:none;background:transparent}
         <div style="font-size:16px;color:var(--color-neutral-600)">Text 988 and someone will write back. Tap to open a message.</div>
       </a>
 
-      <a class="card" href="https://aa-intergroup.org" style="text-decoration:none;color:inherit;padding:var(--space-4);gap:4px">
+      <p style="font-size:16px;color:var(--color-neutral-600);margin:4px 0 0;text-wrap:pretty">If you ever feel confused, see things that aren&rsquo;t there, or have a seizure, that&rsquo;s a 911 call &mdash; not a wait&#8209;and&#8209;see.</p>
+    </section>
+
+    <div class="hr"></div>
+
+    <!-- Meeting finding is handed off to the people who keep the lists current: A.A.'s
+         own directories. Nothing is cached here, so nothing here can go stale. -->
+    <section style="display:flex;flex-direction:column;gap:var(--space-3)">
+      <div style="text-align:center">
+        <div style="font-size:14px;letter-spacing:.2em;text-transform:uppercase;color:var(--color-accent2-700)">A room, a screen, or the phone</div>
+        <h2 style="font-size:35px;margin:6px 0 0">Find a meeting</h2>
+        <p style="font-size:17px;color:var(--color-neutral-700);margin:8px 0 0;text-wrap:pretty">You can walk into an open meeting without telling anyone you&rsquo;re coming, and leave whenever you like.</p>
+      </div>
+
+      <a class="card" href="https://charlotteaa.org/meetings/" style="text-decoration:none;color:inherit;border-color:var(--color-accent);padding:var(--space-4);gap:4px">
+        <div style="font-family:var(--font-heading);font-size:24px;color:var(--color-accent-700)">Meetings around Charlotte</div>
+        <div style="font-size:16px;color:var(--color-neutral-600)">Metrolina Intergroup&rsquo;s list &mdash; by day, by neighbourhood, on a map. The place to start. Tap to open.</div>
+      </a>
+
+      <a class="card" href="https://www.aa.org/find-aa/north-america" style="text-decoration:none;color:inherit;padding:var(--space-4);gap:4px">
+        <div style="font-family:var(--font-heading);font-size:24px;color:var(--color-accent-700)">Anywhere else you happen to be</div>
+        <div style="font-size:16px;color:var(--color-neutral-600)">A.A.&rsquo;s own directory for the whole of North America &mdash; useful when you&rsquo;re travelling. Tap to open.</div>
+      </a>
+
+      <a class="card" href="https://aa-intergroup.org/meetings/" style="text-decoration:none;color:inherit;padding:var(--space-4);gap:4px">
         <div style="font-family:var(--font-heading);font-size:24px;color:var(--color-accent-700)">A meeting online, right now</div>
-        <div style="font-size:16px;color:var(--color-neutral-600)">The A.A. Online Intergroup runs meetings around the clock. Nobody has to see you. Tap to open.</div>
+        <div style="font-size:16px;color:var(--color-neutral-600)">The A.A. Online Intergroup runs meetings around the clock. You can keep your camera off. Tap to open.</div>
       </a>
 
       <a class="card" href="https://charlotteaa.org/a-a-telephone-meetings/" style="text-decoration:none;color:inherit;padding:var(--space-4);gap:4px">
@@ -268,7 +363,12 @@ input[type=date]{-webkit-appearance:none;appearance:none;background:transparent}
         <div style="font-size:16px;color:var(--color-neutral-600)">Local telephone meetings, no app and no camera needed. Tap to open.</div>
       </a>
 
-      <p style="font-size:16px;color:var(--color-neutral-600);margin:4px 0 0;text-wrap:pretty">If you ever feel confused, see things that aren&rsquo;t there, or have a seizure, that&rsquo;s a 911 call &mdash; not a wait&#8209;and&#8209;see.</p>
+      <a class="card" href="https://www.aa.org/meeting-guide-app" style="text-decoration:none;color:inherit;padding:var(--space-4);gap:4px">
+        <div style="font-family:var(--font-heading);font-size:24px;color:var(--color-accent-700)">The Meeting Guide app</div>
+        <div style="font-size:16px;color:var(--color-neutral-600)">A free app from A.A. that finds meetings near wherever you&rsquo;re standing. Tap to open, then Get.</div>
+      </a>
+
+      <p style="font-size:16px;color:var(--color-neutral-600);margin:4px 0 0;text-wrap:pretty">If a room doesn&rsquo;t suit you, that says nothing about the next one. People often try several before one feels like theirs.</p>
     </section>
 
     <div class="hr"></div>
@@ -307,12 +407,16 @@ input[type=date]{-webkit-appearance:none;appearance:none;background:transparent}
   function $(id) { return document.getElementById(id); }
 
   // ---- persisted state (same keys as v1, so nothing Dad saved gets lost) ----
-  var state = { rate: null, editingRate: false, occ: [], hintDone: false };
+  var state = { rate: null, editingRate: false, occ: [], hintDone: false, steps: [], people: [] };
   try {
     var r = localStorage.getItem('jj_rate');
     if (r !== null && r !== '') state.rate = parseFloat(r);
     state.occ = JSON.parse(localStorage.getItem('jj_occasions') || '[]') || [];
     state.hintDone = localStorage.getItem('jj_hint_done') === '1';
+    // Which of the Twelve Steps he has marked, and his own numbers to ring.
+    // Both are new keys — anything saved before this version is untouched.
+    state.steps = JSON.parse(localStorage.getItem('jj_steps') || '[]') || [];
+    state.people = JSON.parse(localStorage.getItem('jj_people') || '[]') || [];
     // How he arrived at the weekly figure. jj_rate stays the source of truth for
     // the maths, so anything saved before this feature still works untouched.
     state.spend = JSON.parse(localStorage.getItem('jj_spend') || 'null');
@@ -381,24 +485,28 @@ input[type=date]{-webkit-appearance:none;appearance:none;background:transparent}
   // ---- build the healing timeline DOM once; keep refs to the parts that change ----
   // Each entry collapses. Anything already reached opens by itself; anything still
   // ahead stays shut behind a tap, so the list reads as a path instead of a wall.
+  // How many not-yet-reached entries are on show. Everything already reached is
+  // always visible; this starts at two and the button adds three at a time.
+  var HEALTH_SEED = 2, HEALTH_MORE = 3;
+  var healthReveal = HEALTH_SEED;
+
   var healthRows = [];
   (function buildHealth() {
     var list = $('healthList');
     var nowMs = Date.now();
     for (var i = 0; i < visibleH.length; i++) {
       var d = visibleH[i][0], title = visibleH[i][1], body = visibleH[i][2];
-      var last = i === visibleH.length - 1;
       var reachedNow = (nowMs - QUIT.getTime()) >= (d * DAY);
 
       var row = document.createElement('div');
-      row.style.cssText = 'display:flex;gap:16px;padding-bottom:' + (last ? 0 : 26) + 'px';
+      row.style.cssText = 'display:flex;gap:16px;padding-bottom:26px';
 
       var railCol = document.createElement('div');
       railCol.style.cssText = 'flex:none;width:16px;display:flex;flex-direction:column;align-items:center';
       var dot = document.createElement('div');
       dot.style.cssText = 'flex:none;width:15px;height:15px;border-radius:50%;border:2px solid var(--color-accent);background:var(--color-bg);margin-top:5px';
       var rail = document.createElement('div');
-      rail.style.cssText = 'flex:1;width:2px;background:' + (last ? 'transparent' : 'var(--color-neutral-300)') + ';margin-top:5px';
+      rail.style.cssText = 'flex:1;width:2px;background:var(--color-neutral-300);margin-top:5px';
       railCol.appendChild(dot); railCol.appendChild(rail);
 
       var main = document.createElement('div');
@@ -445,7 +553,7 @@ input[type=date]{-webkit-appearance:none;appearance:none;background:transparent}
       row.appendChild(railCol); row.appendChild(main);
       list.appendChild(row);
 
-      var ref = { d: d, dot: dot, rail: rail, tag: tag, bar: bar, last: last, done: null,
+      var ref = { d: d, row: row, dot: dot, rail: rail, tag: tag, when: when, track: track, bar: bar, done: null,
                   body: bodyEl, chev: chev, head: head, open: reachedNow, userSet: false };
       healthRows.push(ref);
 
@@ -466,6 +574,36 @@ input[type=date]{-webkit-appearance:none;appearance:none;background:transparent}
     r.chev.style.transform = r.open ? 'rotate(180deg)' : 'none';
     r.head.setAttribute('aria-expanded', r.open ? 'true' : 'false');
   }
+
+  // Decide which entries are on screen, and dress the reached ones in copper.
+  // H is in ascending day order, so everything reached is a prefix of the list —
+  // the visible run is simply "all the reached ones, plus however many are revealed".
+  // Only called when the reached count changes or he taps the button, never per tick.
+  function layoutHealth() {
+    var reached = 0, i;
+    for (i = 0; i < healthRows.length; i++) if (healthRows[i].done) reached++;
+    var shown = Math.min(healthRows.length, reached + healthReveal);
+    for (i = 0; i < healthRows.length; i++) {
+      var r = healthRows[i];
+      var last = i === shown - 1;
+      r.row.style.display = i < shown ? 'flex' : 'none';
+      r.row.style.paddingBottom = last ? '0' : '26px';
+      r.rail.style.background = last ? 'transparent'
+        : (r.done ? 'var(--color-accent2)' : 'var(--color-neutral-300)');
+    }
+    var left = healthRows.length - shown;
+    var btn = $('moreHealth');
+    btn.style.display = left > 0 ? 'inline-flex' : 'none';
+    if (left > 0) {
+      var n = Math.min(HEALTH_MORE, left);
+      btn.textContent = 'Show ' + n + ' more' + (left > n ? ' (' + left + ' still ahead)' : '');
+    }
+  }
+
+  $('moreHealth').onclick = function () {
+    healthReveal += HEALTH_MORE;
+    layoutHealth();
+  };
 
   // ---- confetti overlay (mounted once, shown on milestone days) ----
   (function buildConfetti() {
@@ -718,57 +856,16 @@ input[type=date]{-webkit-appearance:none;appearance:none;background:transparent}
   ];
   for (var cy = 2; cy <= 50; cy++) CHIPS.push([cy * 365, cy + ' years', '#8c6239', '#ffffff']);
 
-  var chipRefs = [];
-  (function buildChips() {
-    var grid = $('chipGrid');
-    for (var i = 0; i < CHIPS.length; i++) {
-      var c = CHIPS[i];
-      var cell = document.createElement('div');
-      cell.style.cssText = 'display:none;flex-direction:column;align-items:center;gap:7px';
-      var disc = document.createElement('div');
-      disc.style.cssText = 'width:74px;height:74px;border-radius:50%;display:flex;align-items:center;justify-content:center;' +
-        'font-family:var(--font-heading);font-weight:var(--font-heading-weight);font-size:15px;line-height:1.1;text-align:center;padding:6px';
-      var cap = document.createElement('div');
-      cap.style.cssText = 'font-size:15px;color:var(--color-neutral-700);text-align:center;line-height:1.25';
-      cap.textContent = c[1];
-      cell.appendChild(disc); cell.appendChild(cap);
-      grid.appendChild(cell);
-      chipRefs.push({ d: c[0], name: c[1], color: c[2], ink: c[3], cell: cell, disc: disc, cap: cap, earned: null });
-    }
-  })();
-
+  // The grid of earned discs is gone — a wall of ticks for something he already knows
+  // he did. CHIPS stays as the schedule the "working towards" card counts against.
   function renderChips(days) {
     var lastEarned = -1, nextIdx = -1;
-    for (var i = 0; i < chipRefs.length; i++) {
-      var r = chipRefs[i];
-      var earned = days >= r.d;
-      if (earned) lastEarned = i; else if (nextIdx < 0) nextIdx = i;
-      // Show every earned chip, plus the next three still to come.
-      var show = earned || (nextIdx >= 0 && i < nextIdx + 3);
-      r.cell.style.display = show ? 'flex' : 'none';
-      if (earned !== r.earned) {
-        r.earned = earned;
-        if (earned) {
-          r.disc.style.background = r.color;
-          r.disc.style.border = '2px solid rgba(26,37,28,.22)';
-          r.disc.style.color = r.ink;
-          r.disc.style.boxShadow = '0 2px 6px rgba(26,37,28,.18)';
-          r.disc.textContent = '✓';
-          r.disc.style.fontSize = '26px';
-          r.cap.style.color = 'var(--color-text)';
-        } else {
-          r.disc.style.background = 'transparent';
-          r.disc.style.border = '2px dashed var(--color-neutral-300)';
-          r.disc.style.color = 'var(--color-neutral-500)';
-          r.disc.style.boxShadow = 'none';
-          r.disc.textContent = '';
-          r.cap.style.color = 'var(--color-neutral-500)';
-        }
-      }
+    for (var i = 0; i < CHIPS.length; i++) {
+      if (days >= CHIPS[i][0]) lastEarned = i; else { nextIdx = i; break; }
     }
     if (nextIdx < 0) { $('nextChipCard').style.display = 'none'; return; }
-    var nx = chipRefs[nextIdx];
-    var from = lastEarned >= 0 ? chipRefs[lastEarned].d : 0;
+    var nx = { d: CHIPS[nextIdx][0], name: CHIPS[nextIdx][1], color: CHIPS[nextIdx][2] };
+    var from = lastEarned >= 0 ? CHIPS[lastEarned][0] : 0;
     var span = nx.d - from;
     var pct = span > 0 ? Math.max(0, Math.min(100, (days - from) / span * 100)) : 0;
     $('nextChipName').textContent = 'The ' + nx.name + ' chip';
@@ -778,6 +875,239 @@ input[type=date]{-webkit-appearance:none;appearance:none;background:transparent}
     var left = nx.d - days;
     $('nextChipSub').textContent = left + (left === 1 ? ' day to go' : ' days to go') + ' · ' + Math.floor(pct) + '% of the way';
   }
+
+  // ---- the Twelve Steps ----
+  // [step text, plain-English note]. The step text belongs to A.A. World Services and
+  // is credited on screen; the notes were written for this app, deliberately, so no
+  // copyrighted commentary (the Big Book, the Twelve and Twelve) is reproduced here.
+  var STEPS = [
+    ['We admitted we were powerless over alcohol—that our lives had become unmanageable.',
+     'Admitting it plainly: drinking safely is not on the table for you, and pretending otherwise has cost you. That is the whole of step one. You have already done the hard part of it.'],
+    ['Came to believe that a Power greater than ourselves could restore us to sanity.',
+     'Believing something outside your own willpower can help. It does not have to be religion to begin with — for a lot of people it starts as simply as the room full of others who got through it.'],
+    ['Made a decision to turn our will and our lives over to the care of God as we understood Him.',
+     'Deciding to stop running the whole thing on stubbornness alone. As we understood Him is doing real work in that sentence — it is left to you. It is a decision, and you get to make it again tomorrow.'],
+    ['Made a searching and fearless moral inventory of ourselves.',
+     'An honest look at your own life, written down. Not a confession — a stocktake, the good in it as well. Most people find it far less awful on paper than it was in their head.'],
+    ['Admitted to God, to ourselves, and to another human being the exact nature of our wrongs.',
+     'Telling one other person the whole of it. The relief people describe afterwards is the reason this one is on the list.'],
+    ['Were entirely ready to have God remove all these defects of character.',
+     'Not fixing yourself. Just getting willing to let the old habits go — which is harder than it sounds, because some of them have been useful.'],
+    ['Humbly asked Him to remove our shortcomings.',
+     'Asking, rather than gritting your teeth. A short step to read and a long one to live.'],
+    ['Made a list of all persons we had harmed, and became willing to make amends to them all.',
+     'Who got hurt. Only the list at this stage — nothing to do about it yet, and nobody to ring.'],
+    ['Made direct amends to such people wherever possible, except when to do so would injure them or others.',
+     'Putting it right where you can, and leaving it be where doing so would hurt someone. Timing matters here, and this is the step to take alongside a sponsor rather than on your own.'],
+    ['Continued to take personal inventory and when we were wrong promptly admitted it.',
+     'Keeping it current. When you are wrong, say so that day, so it does not get carried into next week.'],
+    ['Sought through prayer and meditation to improve our conscious contact with God as we understood Him, praying only for knowledge of His will for us and the power to carry that out.',
+     'Some quiet time each day. Prayer if you pray, sitting still with a cup of coffee if you do not.'],
+    ['Having had a spiritual awakening as the result of these Steps, we tried to carry this message to alcoholics, and to practice these principles in all our affairs.',
+     'Being useful to the next person who walks in the door frightened. And then living the rest of it — work, family, ordinary Tuesdays — the same way.']
+  ];
+  while (state.steps.length < STEPS.length) state.steps.push(false);
+
+  var stepRows = [];
+  (function buildSteps() {
+    var list = $('stepList');
+    for (var i = 0; i < STEPS.length; i++) {
+      var row = document.createElement('div');
+      row.style.cssText = 'display:flex;gap:14px;padding-bottom:' + (i === STEPS.length - 1 ? 0 : 20) + 'px';
+
+      var badge = document.createElement('div');
+      badge.style.cssText = 'flex:none;width:38px;height:38px;border-radius:50%;margin-top:4px;display:flex;' +
+        'align-items:center;justify-content:center;font-family:var(--font-heading);font-weight:var(--font-heading-weight);' +
+        "font-size:19px;font-feature-settings:'lnum','tnum'";
+
+      var main = document.createElement('div');
+      main.style.cssText = 'flex:1;min-width:0;display:flex;flex-direction:column;gap:8px';
+
+      var head = document.createElement('button');
+      head.type = 'button';
+      head.setAttribute('aria-expanded', 'false');
+      head.style.cssText = 'display:flex;width:100%;align-items:center;justify-content:space-between;gap:12px;' +
+        'background:transparent;border:0;padding:6px 0;margin:0;text-align:left;cursor:pointer;color:inherit;font:inherit;min-height:44px';
+      var titleEl = document.createElement('span');
+      titleEl.style.cssText = 'font-size:18px;line-height:1.5;flex:1;min-width:0;text-wrap:pretty';
+      titleEl.textContent = STEPS[i][0];
+      var chev = document.createElement('span');
+      chev.setAttribute('aria-hidden', 'true');
+      chev.style.cssText = 'flex:none;width:34px;height:34px;border-radius:50%;border:2px solid var(--color-accent-300);' +
+        'display:flex;align-items:center;justify-content:center;font-size:15px;line-height:1;color:var(--color-accent-700);' +
+        'transition:transform .18s ease';
+      chev.textContent = '▼';
+      head.appendChild(titleEl); head.appendChild(chev);
+
+      var panel = document.createElement('div');
+      panel.style.cssText = 'display:none;flex-direction:column;gap:10px';
+      var note = document.createElement('p');
+      note.style.cssText = 'margin:0;font-size:17px;line-height:1.65;color:var(--color-neutral-700);text-wrap:pretty';
+      note.textContent = STEPS[i][1];
+      var mark = document.createElement('button');
+      mark.className = 'btn btn-secondary';
+      mark.style.cssText = 'align-self:flex-start';
+      panel.appendChild(note); panel.appendChild(mark);
+
+      main.appendChild(head); main.appendChild(panel);
+      row.appendChild(badge); row.appendChild(main);
+      list.appendChild(row);
+
+      var ref = { i: i, badge: badge, chev: chev, head: head, panel: panel, mark: mark, open: false };
+      stepRows.push(ref);
+
+      (function (r) {
+        r.head.onclick = function () {
+          r.open = !r.open;
+          r.panel.style.display = r.open ? 'flex' : 'none';
+          r.chev.style.transform = r.open ? 'rotate(180deg)' : 'none';
+          r.head.setAttribute('aria-expanded', r.open ? 'true' : 'false');
+        };
+        r.mark.onclick = function () {
+          state.steps[r.i] = !state.steps[r.i];
+          save('jj_steps', JSON.stringify(state.steps));
+          renderSteps();
+        };
+      })(ref);
+    }
+  })();
+
+  function renderSteps() {
+    var doneCount = 0, working = -1;
+    for (var i = 0; i < stepRows.length; i++) {
+      var r = stepRows[i], on = state.steps[i] === true;
+      if (on) doneCount++; else if (working < 0) working = i;
+      r.badge.style.background = on ? 'var(--color-accent2-600)' : 'transparent';
+      r.badge.style.border = on ? '2px solid var(--color-accent2-600)' : '2px dashed var(--color-neutral-300)';
+      r.badge.style.color = on ? '#ffffff' : 'var(--color-neutral-500)';
+      r.badge.textContent = on ? '✓' : String(i + 1);
+      r.mark.textContent = on ? 'Not yet, after all' : 'I’ve worked this one';
+    }
+    $('stepNow').textContent = working < 0
+      ? 'All twelve worked'
+      : (doneCount === 0 ? 'Step one is where everybody starts' : 'Step ' + (working + 1) + ' is next');
+    $('stepBar').style.width = (doneCount / STEPS.length * 100).toFixed(1) + '%';
+    $('stepSub').textContent = working < 0
+      ? 'And then round again — that is how it is meant to work.'
+      : doneCount + ' of 12 marked · no hurry, and no wrong pace';
+  }
+  renderSteps();
+
+  // ---- the four checks ----
+  var HALT = [
+    ['Hungry', 'When did you last eat something proper? Sort that first and see how the hour looks after.'],
+    ['Angry', 'Something set this off. Naming it out loud to someone takes most of the heat out of it.'],
+    ['Lonely', 'This is the one that hides best. Ring somebody — you do not need a reason ready.'],
+    ['Tired', 'If it is late, this is very often the whole answer. Almost nothing needs deciding tonight.']
+  ];
+  (function buildHalt() {
+    var box = $('haltList');
+    for (var i = 0; i < HALT.length; i++) {
+      var line = document.createElement('div');
+      line.style.cssText = 'display:flex;gap:12px;align-items:baseline';
+      var k = document.createElement('div');
+      k.style.cssText = 'flex:none;width:76px;font-family:var(--font-heading);font-weight:var(--font-heading-weight);font-size:19px;color:var(--color-accent-700)';
+      k.textContent = HALT[i][0];
+      var v = document.createElement('div');
+      v.style.cssText = 'flex:1;min-width:0;font-size:16px;line-height:1.55;color:var(--color-neutral-700);text-wrap:pretty';
+      v.textContent = HALT[i][1];
+      line.appendChild(k); line.appendChild(v);
+      box.appendChild(line);
+    }
+  })();
+
+  // ---- the urge timer ----
+  // Fifteen minutes, counted down on its own interval so the once-a-second tick()
+  // stays exactly as cheap as it was. Nothing is stored — closing the app forgets it.
+  var URGE_SECS = 900, urgeLeft = 0, urgeTimer = null;
+  var URGE_SAY = [
+    'Still here. That is the whole job.',
+    'Somewhere past the top of it now.',
+    'Coming down. It always does.',
+    'Nearly through. Have a glass of water.'
+  ];
+  function urgeFace() {
+    var m = Math.floor(urgeLeft / 60), s = urgeLeft % 60;
+    $('urgeClock').textContent = m + ':' + (s < 10 ? '0' : '') + s;
+    var q = Math.min(URGE_SAY.length - 1, Math.floor((URGE_SECS - urgeLeft) / (URGE_SECS / URGE_SAY.length)));
+    $('urgeSay').textContent = URGE_SAY[q];
+  }
+  function urgeStop(finished) {
+    if (urgeTimer) { clearInterval(urgeTimer); urgeTimer = null; }
+    $('urgeClock').style.display = finished ? 'block' : 'none';
+    $('urgeSay').style.display = finished ? 'block' : 'none';
+    if (finished) {
+      $('urgeClock').textContent = '✓';
+      $('urgeSay').textContent = 'You got through it, and you are still sober. That happened because you waited.';
+    }
+    $('urgeBtn').textContent = finished ? 'Start it again' : 'Start 15 minutes';
+  }
+  $('urgeBtn').onclick = function () {
+    if (urgeTimer) { urgeStop(false); return; }
+    urgeLeft = URGE_SECS;
+    $('urgeClock').style.display = 'block';
+    $('urgeSay').style.display = 'block';
+    $('urgeBtn').textContent = 'Stop the timer';
+    urgeFace();
+    urgeTimer = setInterval(function () {
+      urgeLeft--;
+      if (urgeLeft <= 0) { urgeStop(true); return; }
+      urgeFace();
+    }, 1000);
+  };
+
+  // ---- his own people to ring ----
+  function renderPeople() {
+    var list = $('peopleList');
+    list.innerHTML = '';
+    list.style.display = state.people.length ? 'flex' : 'none';
+    for (var i = 0; i < state.people.length; i++) {
+      (function (idx, p) {
+        var card = document.createElement('div');
+        card.className = 'card';
+        card.style.cssText = 'padding:var(--space-3) var(--space-4);flex-direction:row;align-items:center;gap:12px;border-color:var(--color-accent)';
+
+        var link = document.createElement('a');
+        link.href = 'tel:' + p.tel.replace(/[^0-9+]/g, '');
+        link.style.cssText = 'flex:1;min-width:0;text-decoration:none;color:inherit;display:flex;flex-direction:column;gap:2px';
+        var nm = document.createElement('div');
+        nm.style.cssText = 'font-family:var(--font-heading);font-size:23px;color:var(--color-accent-700)';
+        nm.textContent = p.name;
+        var tel = document.createElement('div');
+        tel.style.cssText = "font-size:20px;font-feature-settings:'lnum','tnum'";
+        tel.textContent = p.tel;
+        var hint = document.createElement('div');
+        hint.style.cssText = 'font-size:15px;color:var(--color-neutral-600)';
+        hint.textContent = 'Tap to call.';
+        link.appendChild(nm); link.appendChild(tel); link.appendChild(hint);
+
+        var rm = document.createElement('button');
+        rm.className = 'btn btn-icon btn-ghost';
+        rm.setAttribute('aria-label', 'Remove ' + p.name);
+        rm.style.cssText = 'flex:none;font-size:16px;line-height:1';
+        rm.innerHTML = '&times;';
+        rm.onclick = function () {
+          state.people.splice(idx, 1);
+          save('jj_people', JSON.stringify(state.people));
+          renderPeople();
+        };
+
+        card.appendChild(link); card.appendChild(rm);
+        list.appendChild(card);
+      })(i, state.people[i]);
+    }
+  }
+  $('addPersonBtn').onclick = function () {
+    var nm = $('personName').value.replace(/^\s+|\s+$/g, '');
+    var tl = $('personTel').value.replace(/^\s+|\s+$/g, '');
+    if (!nm || !tl) return;
+    state.people.push({ name: nm, tel: tl });
+    save('jj_people', JSON.stringify(state.people));
+    $('personName').value = ''; $('personTel').value = '';
+    renderPeople();
+  };
+  $('personTel').addEventListener('keydown', function (e) { if (e.key === 'Enter') $('addPersonBtn').click(); });
+  renderPeople();
 
   // ---- the daily line ----
   // Deliberately NOT from the Big Book, the Twelve and Twelve, or Daily Reflections —
@@ -888,7 +1218,7 @@ input[type=date]{-webkit-appearance:none;appearance:none;background:transparent}
       lastDays = days;
       $('bigDays').textContent = days;
       $('bgDays').textContent = days;
-      $('dayLine').textContent = (days === 1 ? 'day' : 'days') + ' without a drink';
+      $('dayLine').textContent = (days === 1 ? 'day' : 'days');
       // Same day number the big counter uses, so the line turns over with it and
       // stays put for the rest of the day. No second clock, nothing stored.
       $('dailyText').textContent = DAILY[((days % DAILY.length) + DAILY.length) % DAILY.length];
@@ -906,6 +1236,11 @@ input[type=date]{-webkit-appearance:none;appearance:none;background:transparent}
     $('nextLabel').textContent = 'Next: ' + name(next) + ' — ' + nextDays + (nextDays === 1 ? ' day' : ' days') + ' to go';
     $('nextBar').style.width = nextPct + '%';
 
+    // Green is the bar still filling; copper is the bar that filled. The moment one
+    // completes it changes colour and picks up a copper ring around the track — the
+    // same tone as the section's eyebrow — so a reached entry reads as reached at a
+    // glance, from arm's length, without having to find the small "✓ Reached".
+    var relayout = false;
     for (var j = 0; j < healthRows.length; j++) {
       var row = healthRows[j];
       var pct = Math.min(100, (elapsed / (row.d * DAY)) * 100);
@@ -915,14 +1250,21 @@ input[type=date]{-webkit-appearance:none;appearance:none;background:transparent}
       if (done !== row.done) {
         var wasKnown = row.done !== null;
         row.done = done;
-        row.tag.style.color = done ? 'var(--color-accent-700)' : 'var(--color-neutral-500)';
-        row.dot.style.background = done ? 'var(--color-accent)' : 'var(--color-bg)';
-        row.chev.style.borderColor = done ? 'var(--color-accent)' : 'var(--color-accent-300)';
-        if (!row.last) row.rail.style.background = done ? 'var(--color-accent-300)' : 'var(--color-neutral-300)';
+        relayout = true;
+        row.tag.style.color = done ? 'var(--color-accent2-700)' : 'var(--color-neutral-500)';
+        row.when.style.color = done ? 'var(--color-accent2-700)' : 'var(--color-accent-700)';
+        row.dot.style.background = done ? 'var(--color-accent2-600)' : 'var(--color-bg)';
+        row.dot.style.borderColor = done ? 'var(--color-accent2-600)' : 'var(--color-accent)';
+        row.chev.style.borderColor = done ? 'var(--color-accent2)' : 'var(--color-accent-300)';
+        row.bar.style.background = done ? 'var(--color-accent2-600)' : 'var(--color-accent)';
+        // outline, not border: it rings the filled track without changing its height.
+        row.track.style.outline = done ? '2px solid var(--color-accent2-600)' : 'none';
+        row.track.style.outlineOffset = done ? '2px' : '0';
         // The day it lands, open it for him — unless he's already chosen for himself.
         if (done && wasKnown && !row.userSet && !row.open) { row.open = true; setOpen(row); }
       }
     }
+    if (relayout) layoutHealth();
 
     var hasRate = state.rate !== null && !isNaN(state.rate) && state.rate > 0 && !state.editingRate;
     if (hasRate) $('saved').textContent = money(state.rate / (7 * DAY) * elapsed);
