@@ -174,9 +174,14 @@ rebuilding DOM each second.
   sit at `x="73"` with `text-anchor="end"`, so each J's advance runs thirteen units
   past the centre line and the pair closes up by twenty-six. Raise to tighten, drop
   to 60 for the old untightened spacing; past about 74 the stems collide. Both texts
-  must carry the same value or the mirror stops being symmetric. Note the knock-on:
-  tightening narrows the pair, but the rule under it is a fixed `x1=24 x2=96`, so the
-  tighter the J's the further that rule overhangs them on both sides.
+  must carry the same value or the mirror stops being symmetric. The rule beneath was
+  widened to `x1=8 x2=112` to suit the tightened pair; keep the two centred on 60
+  together, since changing one without the other throws the balance.
+- **The mark scales as one drawing.** Its `max-width` is 300px and everything inside
+  is in viewBox units, so the rule's `stroke-width:2.8` draws about 7px at that
+  ceiling against under 3px at the original 118px. That is intended, but it is why
+  the rule reads heavier than the number suggests. The hero is about 750px tall as a
+  result — on a small iPhone the progress bar now sits below the fold.
 - **Never crop the mark's viewBox to the letters.** It stays `0 0 120 120`, and the
   dead band at the top left behind by the three dots is dead on purpose. Where the
   cap line falls is a property of whichever face resolves — measured at y=5.5 in the

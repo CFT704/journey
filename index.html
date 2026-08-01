@@ -129,12 +129,17 @@ input[type=date]{-webkit-appearance:none;appearance:none;background:transparent}
            y=5.5 in the last fallback of the chain against y≈24 in Palatino. The mark is
            made bigger by scaling instead, which cannot clip anything. Sized in CSS
            rather than width/height attributes so it shrinks on a 320px phone. -->
-      <svg viewBox="0 0 120 120" style="width:100%;max-width:212px;height:auto;display:block" aria-label="Jimmy's Journey mark">
+      <svg viewBox="0 0 120 120" style="width:100%;max-width:300px;height:auto;display:block" aria-label="Jimmy's Journey mark">
         <g fill="var(--color-accent)" style="font-family:var(--font-mark);font-weight:400;font-size:82px">
           <text x="73" y="78" text-anchor="end">J</text>
           <text x="73" y="78" text-anchor="end" transform="translate(120,0) scale(-1,1)">J</text>
         </g>
-        <line x1="24" y1="107" x2="96" y2="107" stroke="var(--color-accent)" stroke-width="2.8"></line>
+        <!-- Widened from 24→96 to 8→112 to sit under the tightened pair rather than
+             overhang it. Everything in here is in viewBox units, so the rule's 2.8
+             thickness scales with the mark: it draws about 7px at the 300px ceiling
+             against under 3px at the old 118px. That is deliberate — the whole mark
+             scales as one drawing — but it is why the rule reads heavier than it did. -->
+        <line x1="8" y1="107" x2="112" y2="107" stroke="var(--color-accent)" stroke-width="2.8"></line>
       </svg>
       <h1 style="font-family:var(--font-mark);font-weight:400;font-size:43px;line-height:1.1;color:#eef3ec">Jimmy&rsquo;s Journey</h1>
       <div style="display:flex;flex-direction:column;gap:2px">
