@@ -29,7 +29,7 @@ site. There is nothing to build or bundle.
 
 ## Working with `index.html`
 
-The file is ~1300 lines but ~205 KB, because two `@font-face` rules and two icon
+The file is ~1400 lines but ~205 KB, because two `@font-face` rules and two icon
 `<link>`s carry base64 payloads on single enormous lines.
 
 **Do not `Read` the whole file** — it blows the token limit. Read by range
@@ -40,21 +40,28 @@ instead. Structure as of this writing:
 | 1–12 | `<head>` meta: viewport with `viewport-fit=cover`, `apple-mobile-web-app-*`, `theme-color`, `apple-touch-icon` |
 | 13–14 | Base64 icon data URIs (~26 KB each) — **skip when reading** |
 | 15–18 | `<style>` open + two Lora `@font-face` blocks (~50 KB each) — **skip when reading** |
-| 19–96 | Design tokens (`:root` custom properties), base element styles, `.btn`/`.input`/`.card` primitives, keyframes, `.unit*` counter styles |
-| 99–397 | Body markup — see the section order below |
-| 399–1301 | The single `<script>` IIFE |
+| 19–118 | Design tokens (`:root` custom properties), base element styles, `.btn`/`.input`/`.card` primitives, keyframes, `.unit*` counter styles, `.tab` bar styles |
+| 120–485 | Body markup — see the section order below |
+| 487–1414 | The single `<script>` IIFE |
 
-To read code without the blobs: `sed -n '19,96p' index.html`, `sed -n '99,397p'`,
-`sed -n '399,1303p'`. To inspect a blob line safely, pipe through `cut -c1-120`.
+To read code without the blobs: `sed -n '19,118p' index.html`, `sed -n '120,485p'`,
+`sed -n '487,1416p'`. To inspect a blob line safely, pipe through `cut -c1-120`.
 
 ### Page order (markup)
 
-JS-warning banner → hero (mark, big day count, six-unit counter, next-milestone
-bar) → healing timeline + its "show more" button → money card → the
-"working towards <n> chip" card → a thought for today → the Twelve Steps
-(progress card + twelve collapsible rows) → things to reach for (urge timer, the
-four checks, the Serenity Prayer) → sober firsts → need to talk (his own call
-list, then the helplines) → find a meeting → install hint → mailto footer.
+The app is four tabs, one visible at a time, with a fixed bar across the bottom.
+Everything stays mounted — a tab switch is a `display` flip, nothing is rebuilt.
+
+JS-warning banner → hero (`#hero`: mark, big day count, six-unit counter,
+next-milestone bar) → `#miniTop` (the short pine band the other three tabs get
+instead of the hero) → the four panels → `#tabBar`.
+
+| Panel | Tab label | Contents |
+| --- | --- | --- |
+| `#panel-home` | Home | a thought for today → things to reach for (urge timer, the four checks, the Serenity Prayer) → need to talk (his own call list, then the helplines) → find a meeting → mailto "want something added" → sober firsts → install hint → footer |
+| `#panel-money` | Savings | the money card |
+| `#panel-miles` | Milestones | healing timeline + its "show more" button → the "working towards &lt;n&gt; chip" card |
+| `#panel-steps` | 12 / Steps | the Twelve Steps (progress card + twelve collapsible rows + the aa.org link) |
 
 ### Script organization (inside one `'use strict'` IIFE)
 
@@ -69,9 +76,11 @@ list, then the helplines) → find a meeting → install hint → mailto footer.
 9. **Twelve Steps** — the `STEPS` table, `buildSteps()` mounts twelve rows, `renderSteps()` paints marks and the progress card.
 10. **Tools** — the `HALT` four checks, and the urge timer (its own `setInterval`, nothing persisted).
 11. **People** — `renderPeople()` rebuilds his personal call list from `state.people`.
-12. **Daily line**, **install hint**, **static labels** — data and one-time text.
-13. **`sinceParts()` / `setUnit()`** — calendar-true time split and label writing.
-14. **`tick()`** — the once-a-second heartbeat, then `setInterval(tick, 1000)`.
+12. **Daily line**, **install hint** — data and one-time text.
+13. **Bottom tabs** — `TABS` and `showTab()`; flips one panel on, swaps `#hero` for `#miniTop`, scrolls to top.
+14. **Static labels** — the "Sober since …" line.
+15. **`sinceParts()` / `setUnit()`** — calendar-true time split and label writing.
+16. **`tick()`** — the once-a-second heartbeat, then `setInterval(tick, 1000)`.
 
 ## Conventions to follow
 
@@ -109,7 +118,10 @@ change checks (`lastDays`, `lastCeleb`, `lastOccKey`, `lastChipDays`, `row.done`
 once a day — never per tick. The urge timer deliberately keeps its own
 `setInterval` rather than riding `tick()`, so the heartbeat stays exactly as
 cheap as it was. New per-tick work should be similarly guarded rather than
-rebuilding DOM each second.
+rebuilding DOM each second. Note that `tick()` paints all four tabs, not just the
+visible one — the guards are on *change*, not on visibility, so the hidden three
+cost nothing and a milestone that lands while he is on another tab is already
+dressed when he gets back to it. Don't "optimise" that into a visibility check.
 
 ## Invariants worth knowing
 
@@ -124,7 +136,13 @@ rebuilding DOM each second.
   completed rows take the copper dot, rail, eyebrow, bar, and the outline ring
   around the track. Copper still also carries the section eyebrows, the money
   figures and the "working towards" card. If you add a progress element, pick the
-  tone from that rule rather than from where it sits on the page.
+  tone from that rule rather than from where it sits on the page. The tab bar is
+  the one green thing that is not a filling bar: which tab you are on is not
+  progress, so it takes neither side of the split, and green is simply what the
+  pine band already uses.
+- **Which tab he is on is not saved, by design.** The app opens on Home every
+  time — that is where the counter is, and where the urge timer and the phone
+  numbers are. There is no new `localStorage` key for it and there should not be.
 - **The timeline reveals progressively.** `H` is in ascending day order, so the
   reached entries are always a prefix — `layoutHealth()` leans on that to show
   "everything reached, plus `healthReveal` more" and nothing else. If `H` ever
@@ -177,17 +195,26 @@ rebuilding DOM each second.
   must carry the same value or the mirror stops being symmetric. The rule beneath was
   widened to `x1=8 x2=112` to suit the tightened pair; keep the two centred on 60
   together, since changing one without the other throws the balance.
-- **The mark scales as one drawing.** Its `max-width` is 300px and everything inside
-  is in viewBox units, so the rule's `stroke-width:2.8` draws about 7px at that
+- **The mark scales as one drawing.** Its `max-width` is 240px and everything inside
+  is in viewBox units, so the rule's `stroke-width:2.8` draws about 5.6px at that
   ceiling against under 3px at the original 118px. That is intended, but it is why
   the rule reads heavier than the number suggests.
-- **The hero's vertical budget is spent.** It is ~671px, and the milestone bar ends at
-  645 on a 375×667 screen — 22px of slack, the whole hero landing on one screen. That
-  came from four cuts, not one: the viewBox cropped at the bottom only (120→110, the
-  band below the rule, dead in every face), top padding 40→14, bottom 36→26, stack gap
-  14→11. Anything new added to the hero pushes the bar off the bottom of an SE, so
-  take the space from somewhere rather than appending. The 320×568 phone is already
-  over and always was.
+- **The hero's vertical budget is spent, and the tab bar spends part of it.** The bar
+  is fixed and 59px tall before the safe-area inset, so a 375×667 screen has 608px to
+  land the hero in, not 667. The hero is now ~616px with the milestone bar ending at
+  590 — 18px of slack, against the 22px it had before the tabs. Five cuts got it there:
+  the viewBox cropped at the bottom only (120→110, the band below the rule, dead in
+  every face), top padding 40→14, bottom 36→26, stack gap 14→11, and the mark's
+  `max-width` 300→240 when the tabs went in. The mark is the right place to take it
+  from — largest element, the only slack that is neither type nor a tap target, and the
+  wordmark beneath says the same thing in words — but there is no fifth cut left of
+  that size. Anything added to the hero, or any growth in the tab bar, pushes the
+  milestone bar behind the tabs on an SE, so take the space from somewhere rather than
+  appending. The 320×568 phone is already over and always was.
+- **The content column reserves the tab bar's height.** Its bottom padding is
+  `calc(env(safe-area-inset-bottom, 0px) + 98px)` — the bar's 58px plus the 40px the
+  page ended on before. Change `.tab`'s `min-height` and that number moves with it, or
+  the last line of every tab hides behind the bar.
 - **Never crop the mark's viewBox to the letters.** It stays `0 0 120 120`, and the
   dead band at the top left behind by the three dots is dead on purpose. Where the
   cap line falls is a property of whichever face resolves — measured at y=5.5 in the

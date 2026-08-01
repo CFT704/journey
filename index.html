@@ -102,6 +102,19 @@ input[type=date]{-webkit-appearance:none;appearance:none;background:transparent}
 @media (max-width:359px){.mNum{font-size:16.5px}}
 @media (max-width:420px){.unitLbl{font-size:11px}}
 @media (max-width:359px){.unitNum{font-size:26px}.unitLbl{font-size:9.5px}}
+/* Bottom tab bar: four equal cells. Every cell centres its contents vertically, because
+   the Twelve Steps cell stacks its two words and the three single-word cells have to sit
+   level with that pair rather than hang off the top of it. 58px tall before the safe-area
+   inset — comfortably over the 44px tap minimum without eating a screen's worth of list. */
+.tab{flex:1 1 0;min-width:0;display:flex;flex-direction:column;align-items:center;justify-content:center;
+  min-height:58px;padding:8px 3px;background:transparent;border:0;border-top:2px solid transparent;
+  cursor:pointer;font-family:var(--font-heading);font-weight:var(--font-heading-weight);font-size:15px;
+  line-height:1.15;color:rgba(238,243,236,.6);-webkit-tap-highlight-color:transparent}
+/* Which tab you are on is not progress, so it takes neither side of the green/copper
+   split by that rule — it takes green because green is what the pine band already uses. */
+.tab[aria-selected="true"]{color:var(--color-accent);border-top-color:var(--color-accent)}
+.tabNum{font-feature-settings:'lnum','tnum'}
+@media (max-width:359px){.tab{font-size:13px}}
 </style>
 </head>
 <body>
@@ -116,7 +129,7 @@ input[type=date]{-webkit-appearance:none;appearance:none;background:transparent}
        which cannot be cropped out of the viewBox without risking a clipped cap line on
        some other face), so 40 on top of that read as a hole rather than as breathing
        room. The safe-area inset stays untouched — that is the notch, not styling. -->
-  <section style="background:#16281f;color:#eef3ec;position:relative;overflow:hidden;padding:calc(env(safe-area-inset-top, 0px) + 14px) 24px 26px;text-align:center">
+  <section id="hero" style="background:#16281f;color:#eef3ec;position:relative;overflow:hidden;padding:calc(env(safe-area-inset-top, 0px) + 14px) 24px 26px;text-align:center">
     <div id="bgDays" aria-hidden="true" style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:var(--font-heading);font-weight:400;font-size:340px;line-height:1;color:var(--color-accent);opacity:.07;font-feature-settings:'lnum','tnum';pointer-events:none;user-select:none;-webkit-user-select:none"></div>
     <!-- gap is 11, down from 14. The mark carries a lot of its own whitespace at this
          size, so the stack reads no tighter than it did while giving the milestone bar
@@ -137,16 +150,24 @@ input[type=date]{-webkit-appearance:none;appearance:none;background:transparent}
            y=5.5 in the last fallback of the chain against y≈24 in Palatino. The bottom
            is a different matter and IS cropped, 120 down to 110: the rule is drawn at a
            y this file controls and ends at 108.4, so everything past it is dead in every
-           face. That is worth 25px of hero height at the 300px ceiling. Sized in CSS
-           rather than width/height attributes so it shrinks on a 320px phone. -->
-      <svg viewBox="0 0 120 110" style="width:100%;max-width:300px;height:auto;display:block" aria-label="Jimmy's Journey mark">
+           face. That is worth 20px of hero height at the 240px ceiling. Sized in CSS
+           rather than width/height attributes so it shrinks on a 320px phone.
+           The ceiling came down 300→240 when the tab bar went in. The bar is fixed and
+           59px tall, which takes the usable height of a 375×667 phone from 667 to 608,
+           and the hero at a 300px mark ended at 645 — the milestone bar would have sat
+           behind the tabs. The mark is where that 55px had to come from: it is by some
+           way the largest thing in the hero, it is the only element with slack that is
+           not type or a tap target, and the wordmark directly beneath it says the same
+           thing in words. At 240 the bar lands at 590, leaving 18px of slack against the
+           22px it had before. Raising this back past about 245 puts it behind the tabs. -->
+      <svg viewBox="0 0 120 110" style="width:100%;max-width:240px;height:auto;display:block" aria-label="Jimmy's Journey mark">
         <g fill="var(--color-accent)" style="font-family:var(--font-mark);font-weight:400;font-size:82px">
           <text x="73" y="78" text-anchor="end">J</text>
           <text x="73" y="78" text-anchor="end" transform="translate(120,0) scale(-1,1)">J</text>
         </g>
         <!-- Widened from 24→96 to 8→112 to sit under the tightened pair rather than
              overhang it. Everything in here is in viewBox units, so the rule's 2.8
-             thickness scales with the mark: it draws about 7px at the 300px ceiling
+             thickness scales with the mark: it draws about 5.6px at the 240px ceiling
              against under 3px at the old 118px. That is deliberate — the whole mark
              scales as one drawing — but it is why the rule reads heavier than it did. -->
         <line x1="8" y1="107" x2="112" y2="107" stroke="var(--color-accent)" stroke-width="2.8"></line>
@@ -176,256 +197,291 @@ input[type=date]{-webkit-appearance:none;appearance:none;background:transparent}
       </div>
     </div>
   </section>
+
+  <!-- What the other three tabs get instead of the hero. The hero's vertical budget is
+       already spent to the last 22px, so it is not something to shrink and reuse four
+       times over; this is a separate, much shorter band carrying the wordmark and the
+       same day number tick() is already writing for the big counter. -->
+  <section id="miniTop" style="display:none;background:#16281f;color:#eef3ec;padding:calc(env(safe-area-inset-top, 0px) + 16px) 24px 18px;text-align:center">
+    <div style="max-width:420px;margin:0 auto;display:flex;flex-direction:column;align-items:center;gap:5px">
+      <div style="font-family:var(--font-mark);font-weight:400;font-size:30px;line-height:1.1">Jimmy&rsquo;s Journey</div>
+      <div id="miniDays" style="min-height:22px;font-size:14px;letter-spacing:.18em;text-transform:uppercase;color:var(--color-accent);font-feature-settings:'lnum','tnum'"></div>
+    </div>
+  </section>
   <div id="confetti" aria-hidden="true" style="display:none;position:fixed;inset:0;pointer-events:none;overflow:hidden;z-index:5"></div>
 
-  <div style="max-width:420px;margin:0 auto;padding:36px 20px calc(env(safe-area-inset-bottom, 0px) + 40px);display:flex;flex-direction:column;gap:40px">
+  <!-- One column, four panels. The container reserves 98px plus the safe-area inset
+       at the bottom for the fixed tab bar, so the last line of any tab clears it. -->
+  <div style="max-width:420px;margin:0 auto;padding:36px 20px calc(env(safe-area-inset-bottom, 0px) + 98px)">
 
-    <section>
-      <div style="text-align:center;margin-bottom:var(--space-4)">
-        <div style="font-size:14px;letter-spacing:.2em;text-transform:uppercase;color:var(--color-accent2-700)">The healing, as it happens</div>
-        <h2 style="font-size:35px;margin:6px 0 0">Your body, mending itself</h2>
-        <p style="font-size:16px;color:var(--color-neutral-600);margin:8px 0 0;text-wrap:pretty">Tap any one to read it. Everything you have reached is marked in copper. These come from research on groups of people &mdash; yours may run faster or slower.</p>
-      </div>
-      <div id="healthList" style="display:flex;flex-direction:column"></div>
-      <!-- Everything already reached always shows. What is still ahead starts at two
-           entries so the list reads as a next step rather than a wall; this button
-           adds three more each time it is tapped. -->
-      <button id="moreHealth" class="btn btn-secondary btn-block" style="display:none;margin-top:var(--space-3)"></button>
-    </section>
+    <div id="panel-home" role="tabpanel" aria-labelledby="tab-home" style="display:flex;flex-direction:column;gap:40px">
 
-    <div class="hr"></div>
-
-    <section class="card" style="padding:var(--space-6);text-align:center;display:flex;flex-direction:column;gap:10px">
-      <div style="font-size:14px;letter-spacing:.2em;text-transform:uppercase;color:var(--color-accent2-700)">Money kept in your pocket</div>
-
-      <div id="savedView" style="display:none;flex-direction:column;gap:10px">
-        <div id="saved" style="font-family:var(--font-heading);font-size:62px;line-height:1;color:var(--color-accent2-700);font-feature-settings:'lnum','tnum'"></div>
-        <div id="rateLabel" style="font-size:17px;color:var(--color-neutral-600);text-wrap:pretty"></div>
-        <div id="savedBreak" style="display:flex;justify-content:center;gap:0;margin-top:4px"></div>
-        <button id="editRateBtn" class="btn btn-ghost" style="align-self:center">Change how this is worked out</button>
-      </div>
-
-      <div id="rateForm" style="display:none;flex-direction:column;gap:14px">
-        <p style="font-size:18px;color:var(--color-neutral-700);margin:0;text-wrap:pretty">How would you like to work this out? Pick whichever is easiest to answer.</p>
-
-        <div id="modeTabs" style="display:flex;flex-direction:column;gap:8px"></div>
-
-        <div id="modeFields" style="display:flex;flex-direction:column;gap:12px;text-align:left"></div>
-
-        <div id="ratePreview" style="font-size:17px;color:var(--color-accent2-700);min-height:26px;font-feature-settings:'lnum','tnum'"></div>
-        <button id="saveRateBtn" class="btn btn-primary btn-block">Save this</button>
-      </div>
-    </section>
-
-    <div class="hr"></div>
-
-    <section style="display:flex;flex-direction:column;gap:var(--space-3)">
-      <div class="card" id="nextChipCard" style="padding:var(--space-4);gap:10px;border-color:var(--color-accent2-600)">
-        <div style="font-size:14px;letter-spacing:.14em;text-transform:uppercase;color:var(--color-accent2-700)">Working towards</div>
-        <div id="nextChipName" style="font-family:var(--font-heading);font-size:26px;line-height:1.2"></div>
-        <div style="height:16px;border-radius:8px;background:var(--color-neutral-200);overflow:hidden;box-shadow:inset 0 1px 2px rgba(26,37,28,.10)">
-          <div id="nextChipBar" style="height:100%;border-radius:8px;width:0%;transition:width .4s ease"></div>
+      <!-- One line, changed once a day off the same day count as the big number.
+           Bracketed by the two rules so it reads as a breath between sections
+           rather than another panel — nothing to tap, nothing saved. -->
+      <div>
+        <div style="text-align:center">
+          <div style="font-size:14px;letter-spacing:.2em;text-transform:uppercase;color:var(--color-neutral-500)">A thought for today</div>
+          <p id="dailyText" style="font-family:var(--font-heading);font-style:italic;font-size:23px;line-height:1.45;color:var(--color-neutral-700);margin:10px 0 0;text-wrap:pretty"></p>
         </div>
-        <div id="nextChipSub" style="font-size:17px;color:var(--color-neutral-600);font-feature-settings:'lnum','tnum'"></div>
+        <div class="hr"></div>
       </div>
-      <p style="font-size:16px;line-height:1.6;color:var(--color-neutral-600);margin:6px 0 0;text-wrap:pretty">Sobriety chips started in the 1940s, when a nun in Akron gave every patient leaving her ward a small medallion and asked one thing: if you&rsquo;re going to drink, give it back to me first. A chip isn&rsquo;t a prize. It&rsquo;s something to hold on to on the hard days.</p>
-    </section>
 
-    <!-- One line, changed once a day off the same day count as the big number.
-         Bracketed by the two rules so it reads as a breath between sections
-         rather than another panel — nothing to tap, nothing saved. -->
-    <div>
+      <!-- Three things to reach for in the moment: a timer that outlasts a craving, the
+           four-question check, and the prayer. Only the timer holds any state, and it
+           lives in memory — nothing here is saved or counted. -->
+      <section style="display:flex;flex-direction:column;gap:var(--space-3)">
+        <div style="text-align:center">
+          <div style="font-size:14px;letter-spacing:.2em;text-transform:uppercase;color:var(--color-accent2-700)">For a hard hour</div>
+          <h2 style="font-size:35px;margin:6px 0 0">Things to reach for</h2>
+        </div>
+
+        <div class="card" style="padding:var(--space-4);gap:10px;border-color:var(--color-accent)">
+          <div style="font-family:var(--font-heading);font-size:24px">Ride it out</div>
+          <p style="font-size:17px;line-height:1.6;color:var(--color-neutral-700);text-wrap:pretty">A craving is a wave, not a straight line. Most peak and fall inside a quarter of an hour. Start the timer and just get to the end of it.</p>
+          <div id="urgeClock" style="display:none;font-family:var(--font-heading);font-size:58px;line-height:1;text-align:center;color:var(--color-accent-700);font-feature-settings:'lnum','tnum'"></div>
+          <div id="urgeSay" style="display:none;font-size:17px;line-height:1.6;color:var(--color-neutral-700);text-align:center;text-wrap:pretty"></div>
+          <button id="urgeBtn" class="btn btn-primary btn-block">Start 15 minutes</button>
+        </div>
+
+        <div class="card" style="padding:var(--space-4);gap:8px">
+          <div style="font-family:var(--font-heading);font-size:24px">Run the four checks</div>
+          <p style="font-size:17px;line-height:1.6;color:var(--color-neutral-700);text-wrap:pretty">Before you decide what a bad hour means, check whether it is really one of these four. It very often is.</p>
+          <div id="haltList" style="display:flex;flex-direction:column;gap:8px;margin-top:2px"></div>
+        </div>
+
+        <div class="card" style="padding:var(--space-4);gap:6px;text-align:center">
+          <div style="font-size:14px;letter-spacing:.14em;text-transform:uppercase;color:var(--color-neutral-500)">Said at the end of most meetings</div>
+          <p style="font-family:var(--font-heading);font-style:italic;font-size:23px;line-height:1.45;color:var(--color-neutral-700);margin:4px 0 0;text-wrap:pretty">God grant me the serenity to accept the things I cannot change, courage to change the things I can, and wisdom to know the difference.</p>
+        </div>
+      </section>
+
       <div class="hr"></div>
-      <div style="text-align:center">
-        <div style="font-size:14px;letter-spacing:.2em;text-transform:uppercase;color:var(--color-neutral-500)">A thought for today</div>
-        <p id="dailyText" style="font-family:var(--font-heading);font-style:italic;font-size:23px;line-height:1.45;color:var(--color-neutral-700);margin:10px 0 0;text-wrap:pretty"></p>
+
+      <section style="display:flex;flex-direction:column;gap:var(--space-3)">
+        <div style="text-align:center">
+          <div style="font-size:14px;letter-spacing:.2em;text-transform:uppercase;color:var(--color-accent2-700)">Any hour, any day</div>
+          <h2 style="font-size:35px;margin:6px 0 0">Need to talk to someone?</h2>
+          <p style="font-size:17px;color:var(--color-neutral-700);margin:8px 0 0;text-wrap:pretty">You don&rsquo;t have to be in trouble to call. Wanting to talk is reason enough.</p>
+        </div>
+
+        <!-- His own numbers first: sponsor, the people from the rooms, family. Stored in
+             jj_people on this phone only. Put above the helplines deliberately — the
+             number you actually ring is the one belonging to someone who knows you. -->
+        <div id="peopleList" style="display:none;flex-direction:column;gap:var(--space-3)"></div>
+        <div style="display:flex;gap:8px;align-items:center">
+          <input id="personName" class="input" type="text" placeholder="Name (e.g. Sponsor)" style="flex:1;min-width:0;font-size:17px">
+          <input id="personTel" class="input" type="tel" inputmode="tel" placeholder="Phone" style="flex:none;width:152px;font-size:17px">
+        </div>
+        <button id="addPersonBtn" class="btn btn-secondary btn-block">Add someone to call</button>
+
+        <a class="card" href="tel:17043324387" style="text-decoration:none;color:inherit;border-color:var(--color-accent);padding:var(--space-4);gap:4px">
+          <div style="font-family:var(--font-heading);font-size:24px;color:var(--color-accent-700)">Charlotte A.A. &mdash; 24 hour line</div>
+          <div style="font-size:26px;font-feature-settings:'lnum','tnum'">704&#8209;332&#8209;4387</div>
+          <div style="font-size:16px;color:var(--color-neutral-600)">Metrolina Intergroup. A real person, local, any time of night. Tap to call.</div>
+        </a>
+
+        <a class="card" href="tel:18006624357" style="text-decoration:none;color:inherit;padding:var(--space-4);gap:4px">
+          <div style="font-family:var(--font-heading);font-size:24px;color:var(--color-accent-700)">National helpline</div>
+          <div style="font-size:26px;font-feature-settings:'lnum','tnum'">1&#8209;800&#8209;662&#8209;4357</div>
+          <div style="font-size:16px;color:var(--color-neutral-600)">Free and confidential, every day of the year, English or Spanish. Run by SAMHSA. Tap to call.</div>
+        </a>
+
+        <a class="card" href="tel:988" style="text-decoration:none;color:inherit;padding:var(--space-4);gap:4px">
+          <div style="font-family:var(--font-heading);font-size:24px;color:var(--color-accent-700)">If things feel dark</div>
+          <div style="font-size:26px;font-feature-settings:'lnum','tnum'">988</div>
+          <div style="font-size:16px;color:var(--color-neutral-600)">Call or text. The Suicide &amp; Crisis Lifeline, any time. Tap to call.</div>
+        </a>
+
+        <a class="card" href="sms:988" style="text-decoration:none;color:inherit;padding:var(--space-4);gap:4px">
+          <div style="font-family:var(--font-heading);font-size:24px;color:var(--color-accent-700)">Rather type than talk?</div>
+          <div style="font-size:16px;color:var(--color-neutral-600)">Text 988 and someone will write back. Tap to open a message.</div>
+        </a>
+
+        <p style="font-size:16px;color:var(--color-neutral-600);margin:4px 0 0;text-wrap:pretty">If you ever feel confused, see things that aren&rsquo;t there, or have a seizure, that&rsquo;s a 911 call &mdash; not a wait&#8209;and&#8209;see.</p>
+      </section>
+
+      <div class="hr"></div>
+
+      <!-- Meeting finding is handed off to the people who keep the lists current: A.A.'s
+           own directories. Nothing is cached here, so nothing here can go stale. -->
+      <section style="display:flex;flex-direction:column;gap:var(--space-3)">
+        <div style="text-align:center">
+          <div style="font-size:14px;letter-spacing:.2em;text-transform:uppercase;color:var(--color-accent2-700)">A room, a screen, or the phone</div>
+          <h2 style="font-size:35px;margin:6px 0 0">Find a meeting</h2>
+          <p style="font-size:17px;color:var(--color-neutral-700);margin:8px 0 0;text-wrap:pretty">You can walk into an open meeting without telling anyone you&rsquo;re coming, and leave whenever you like.</p>
+        </div>
+
+        <a class="card" href="https://charlotteaa.org/meetings/" style="text-decoration:none;color:inherit;border-color:var(--color-accent);padding:var(--space-4);gap:4px">
+          <div style="font-family:var(--font-heading);font-size:24px;color:var(--color-accent-700)">Meetings around Charlotte</div>
+          <div style="font-size:16px;color:var(--color-neutral-600)">Metrolina Intergroup&rsquo;s list &mdash; by day, by neighbourhood, on a map. The place to start. Tap to open.</div>
+        </a>
+
+        <a class="card" href="https://www.aa.org/find-aa/north-america" style="text-decoration:none;color:inherit;padding:var(--space-4);gap:4px">
+          <div style="font-family:var(--font-heading);font-size:24px;color:var(--color-accent-700)">Anywhere else you happen to be</div>
+          <div style="font-size:16px;color:var(--color-neutral-600)">A.A.&rsquo;s own directory for the whole of North America &mdash; useful when you&rsquo;re travelling. Tap to open.</div>
+        </a>
+
+        <a class="card" href="https://aa-intergroup.org/meetings/" style="text-decoration:none;color:inherit;padding:var(--space-4);gap:4px">
+          <div style="font-family:var(--font-heading);font-size:24px;color:var(--color-accent-700)">A meeting online, right now</div>
+          <div style="font-size:16px;color:var(--color-neutral-600)">The A.A. Online Intergroup runs meetings around the clock. You can keep your camera off. Tap to open.</div>
+        </a>
+
+        <a class="card" href="https://charlotteaa.org/a-a-telephone-meetings/" style="text-decoration:none;color:inherit;padding:var(--space-4);gap:4px">
+          <div style="font-family:var(--font-heading);font-size:24px;color:var(--color-accent-700)">Charlotte meetings by phone</div>
+          <div style="font-size:16px;color:var(--color-neutral-600)">Local telephone meetings, no app and no camera needed. Tap to open.</div>
+        </a>
+
+        <a class="card" href="https://www.aa.org/meeting-guide-app" style="text-decoration:none;color:inherit;padding:var(--space-4);gap:4px">
+          <div style="font-family:var(--font-heading);font-size:24px;color:var(--color-accent-700)">The Meeting Guide app</div>
+          <div style="font-size:16px;color:var(--color-neutral-600)">A free app from A.A. that finds meetings near wherever you&rsquo;re standing. Tap to open, then Get.</div>
+        </a>
+
+        <p style="font-size:16px;color:var(--color-neutral-600);margin:4px 0 0;text-wrap:pretty">If a room doesn&rsquo;t suit you, that says nothing about the next one. People often try several before one feels like theirs.</p>
+      </section>
+
+      <div class="hr"></div>
+
+      <section style="text-align:center;display:flex;flex-direction:column;gap:10px;align-items:center">
+        <div style="font-size:14px;letter-spacing:.2em;text-transform:uppercase;color:var(--color-accent2-700)">Want something added?</div>
+        <p style="font-size:15px;color:var(--color-neutral-600);text-wrap:pretty">Tap below and tell us what you&rsquo;d like &mdash; we&rsquo;ll push an update to your app.</p>
+        <a class="btn btn-primary" href="mailto:carolinafirearms.assistant@gmail.com?subject=Jimmy%27s%20Journey%20%E2%80%94%20update%20request&amp;body=Hey%2C%20it%27s%20Dad.%20Can%20you%20update%20my%20app%3F%20Here%27s%20what%20I%27d%20like%3A%0A%0A" style="text-decoration:none">Request an update</a>
+      </section>
+
+      <div class="hr"></div>
+
+      <section style="display:flex;flex-direction:column;gap:var(--space-3)">
+        <div style="text-align:center">
+          <div style="font-size:14px;letter-spacing:.2em;text-transform:uppercase;color:var(--color-accent2-700)">Days that matter</div>
+          <h2 style="font-size:35px;margin:6px 0 0">Sober firsts</h2>
+          <p style="font-size:15px;color:var(--color-neutral-600);margin:6px 0 0;text-wrap:pretty">Add birthdays and anniversaries &mdash; each one you meet sober gets counted.</p>
+        </div>
+        <div id="occList" style="display:none;flex-direction:column;gap:var(--space-3)"></div>
+        <div style="display:flex;gap:8px;align-items:center">
+          <input id="occName" class="input" type="text" placeholder="Occasion (e.g. Your birthday)" style="flex:1;min-width:0;font-size:17px">
+          <input id="occDate" class="input" type="date" style="flex:none;width:152px;font-size:17px">
+        </div>
+        <button id="addOccBtn" class="btn btn-secondary btn-block">Add a date</button>
+      </section>
+
+      <div class="hr"></div>
+
+      <div id="hintCard" class="card" style="display:none;padding:var(--space-4);flex-direction:column;gap:8px;border-color:var(--color-accent-300)">
+        <div style="font-family:var(--font-heading);font-size:22px">Put this on your home screen</div>
+        <p style="font-size:16px;line-height:1.6;color:var(--color-neutral-700)">In Safari, tap the <strong>Share</strong> button, then <strong>Add to Home Screen</strong>. It becomes a real app &mdash; full screen, no browser bars.</p>
+        <button id="dismissHintBtn" class="btn btn-ghost" style="align-self:flex-start">Done &mdash; hide this</button>
       </div>
+
       <div class="hr"></div>
+
+      <footer style="text-align:center;padding-bottom:8px">
+        <p style="font-family:var(--font-heading);font-style:italic;font-size:22px;color:var(--color-neutral-700);margin:0">One day at a time.<br>Every one of them counts,<br>and we count every one.<br>Proud of you, Dad.</p>
+        <p style="font-family:var(--font-heading);font-style:italic;font-size:20px;color:var(--color-accent-700);margin:10px 0 0">&mdash;&nbsp;Sully</p>
+      </footer>
     </div>
 
-    <!-- The Twelve Steps. The step text itself is A.A.'s, credited below the list and
-         linked back to aa.org; the short plain-English note under each one was written
-         for this app. Marking a step is stored locally in jj_steps and never leaves
-         the phone — it is his own record, not a score anyone else sees. -->
-    <section style="display:flex;flex-direction:column;gap:var(--space-3)">
-      <div style="text-align:center">
-        <div style="font-size:14px;letter-spacing:.2em;text-transform:uppercase;color:var(--color-accent2-700)">One at a time, in order</div>
-        <h2 style="font-size:35px;margin:6px 0 0">The Twelve Steps</h2>
-        <p style="font-size:16px;color:var(--color-neutral-600);margin:8px 0 0;text-wrap:pretty">Tap a step to read it in plain words, and mark it when you&rsquo;ve worked it. Nobody does these to a schedule &mdash; most people do them with a sponsor, and step four onwards is much easier with one.</p>
-      </div>
+    <div id="panel-money" role="tabpanel" aria-labelledby="tab-money" style="display:none;flex-direction:column;gap:40px">
 
-      <div class="card" style="padding:var(--space-4);gap:10px;border-color:var(--color-accent2-600)">
-        <div style="font-size:14px;letter-spacing:.14em;text-transform:uppercase;color:var(--color-accent2-700)">Where you are</div>
-        <div id="stepNow" style="font-family:var(--font-heading);font-size:26px;line-height:1.2"></div>
-        <div style="height:16px;border-radius:8px;background:var(--color-neutral-200);overflow:hidden;box-shadow:inset 0 1px 2px rgba(26,37,28,.10)">
-          <div id="stepBar" style="height:100%;border-radius:8px;width:0%;background:var(--color-accent2-600);transition:width .4s ease"></div>
+      <section class="card" style="padding:var(--space-6);text-align:center;display:flex;flex-direction:column;gap:10px">
+        <div style="font-size:14px;letter-spacing:.2em;text-transform:uppercase;color:var(--color-accent2-700)">Money kept in your pocket</div>
+
+        <div id="savedView" style="display:none;flex-direction:column;gap:10px">
+          <div id="saved" style="font-family:var(--font-heading);font-size:62px;line-height:1;color:var(--color-accent2-700);font-feature-settings:'lnum','tnum'"></div>
+          <div id="rateLabel" style="font-size:17px;color:var(--color-neutral-600);text-wrap:pretty"></div>
+          <div id="savedBreak" style="display:flex;justify-content:center;gap:0;margin-top:4px"></div>
+          <button id="editRateBtn" class="btn btn-ghost" style="align-self:center">Change how this is worked out</button>
         </div>
-        <div id="stepSub" style="font-size:17px;color:var(--color-neutral-600);font-feature-settings:'lnum','tnum'"></div>
-      </div>
 
-      <div id="stepList" style="display:flex;flex-direction:column"></div>
+        <div id="rateForm" style="display:none;flex-direction:column;gap:14px">
+          <p style="font-size:18px;color:var(--color-neutral-700);margin:0;text-wrap:pretty">How would you like to work this out? Pick whichever is easiest to answer.</p>
 
-      <p style="font-size:15px;line-height:1.6;color:var(--color-neutral-500);margin:2px 0 0;text-wrap:pretty">The Twelve Steps are the work of Alcoholics Anonymous World Services, Inc., and are reproduced here for personal use only.</p>
-      <a class="card" href="https://www.aa.org/the-twelve-steps" style="text-decoration:none;color:inherit;padding:var(--space-4);gap:4px">
-        <div style="font-family:var(--font-heading);font-size:24px;color:var(--color-accent-700)">Read them on aa.org</div>
-        <div style="font-size:16px;color:var(--color-neutral-600)">The steps in full, from A.A. itself, alongside the Twelve Traditions. Tap to open.</div>
-      </a>
-    </section>
+          <div id="modeTabs" style="display:flex;flex-direction:column;gap:8px"></div>
 
-    <div class="hr"></div>
+          <div id="modeFields" style="display:flex;flex-direction:column;gap:12px;text-align:left"></div>
 
-    <!-- Three things to reach for in the moment: a timer that outlasts a craving, the
-         four-question check, and the prayer. Only the timer holds any state, and it
-         lives in memory — nothing here is saved or counted. -->
-    <section style="display:flex;flex-direction:column;gap:var(--space-3)">
-      <div style="text-align:center">
-        <div style="font-size:14px;letter-spacing:.2em;text-transform:uppercase;color:var(--color-accent2-700)">For a hard hour</div>
-        <h2 style="font-size:35px;margin:6px 0 0">Things to reach for</h2>
-      </div>
-
-      <div class="card" style="padding:var(--space-4);gap:10px;border-color:var(--color-accent)">
-        <div style="font-family:var(--font-heading);font-size:24px">Ride it out</div>
-        <p style="font-size:17px;line-height:1.6;color:var(--color-neutral-700);text-wrap:pretty">A craving is a wave, not a straight line. Most peak and fall inside a quarter of an hour. Start the timer and just get to the end of it.</p>
-        <div id="urgeClock" style="display:none;font-family:var(--font-heading);font-size:58px;line-height:1;text-align:center;color:var(--color-accent-700);font-feature-settings:'lnum','tnum'"></div>
-        <div id="urgeSay" style="display:none;font-size:17px;line-height:1.6;color:var(--color-neutral-700);text-align:center;text-wrap:pretty"></div>
-        <button id="urgeBtn" class="btn btn-primary btn-block">Start 15 minutes</button>
-      </div>
-
-      <div class="card" style="padding:var(--space-4);gap:8px">
-        <div style="font-family:var(--font-heading);font-size:24px">Run the four checks</div>
-        <p style="font-size:17px;line-height:1.6;color:var(--color-neutral-700);text-wrap:pretty">Before you decide what a bad hour means, check whether it is really one of these four. It very often is.</p>
-        <div id="haltList" style="display:flex;flex-direction:column;gap:8px;margin-top:2px"></div>
-      </div>
-
-      <div class="card" style="padding:var(--space-4);gap:6px;text-align:center">
-        <div style="font-size:14px;letter-spacing:.14em;text-transform:uppercase;color:var(--color-neutral-500)">Said at the end of most meetings</div>
-        <p style="font-family:var(--font-heading);font-style:italic;font-size:23px;line-height:1.45;color:var(--color-neutral-700);margin:4px 0 0;text-wrap:pretty">God grant me the serenity to accept the things I cannot change, courage to change the things I can, and wisdom to know the difference.</p>
-      </div>
-    </section>
-
-    <div class="hr"></div>
-
-    <section style="display:flex;flex-direction:column;gap:var(--space-3)">
-      <div style="text-align:center">
-        <div style="font-size:14px;letter-spacing:.2em;text-transform:uppercase;color:var(--color-accent2-700)">Days that matter</div>
-        <h2 style="font-size:35px;margin:6px 0 0">Sober firsts</h2>
-        <p style="font-size:15px;color:var(--color-neutral-600);margin:6px 0 0;text-wrap:pretty">Add birthdays and anniversaries &mdash; each one you meet sober gets counted.</p>
-      </div>
-      <div id="occList" style="display:none;flex-direction:column;gap:var(--space-3)"></div>
-      <div style="display:flex;gap:8px;align-items:center">
-        <input id="occName" class="input" type="text" placeholder="Occasion (e.g. Your birthday)" style="flex:1;min-width:0;font-size:17px">
-        <input id="occDate" class="input" type="date" style="flex:none;width:152px;font-size:17px">
-      </div>
-      <button id="addOccBtn" class="btn btn-secondary btn-block">Add a date</button>
-    </section>
-
-    <div class="hr"></div>
-
-    <section style="display:flex;flex-direction:column;gap:var(--space-3)">
-      <div style="text-align:center">
-        <div style="font-size:14px;letter-spacing:.2em;text-transform:uppercase;color:var(--color-accent2-700)">Any hour, any day</div>
-        <h2 style="font-size:35px;margin:6px 0 0">Need to talk to someone?</h2>
-        <p style="font-size:17px;color:var(--color-neutral-700);margin:8px 0 0;text-wrap:pretty">You don&rsquo;t have to be in trouble to call. Wanting to talk is reason enough.</p>
-      </div>
-
-      <!-- His own numbers first: sponsor, the people from the rooms, family. Stored in
-           jj_people on this phone only. Put above the helplines deliberately — the
-           number you actually ring is the one belonging to someone who knows you. -->
-      <div id="peopleList" style="display:none;flex-direction:column;gap:var(--space-3)"></div>
-      <div style="display:flex;gap:8px;align-items:center">
-        <input id="personName" class="input" type="text" placeholder="Name (e.g. Sponsor)" style="flex:1;min-width:0;font-size:17px">
-        <input id="personTel" class="input" type="tel" inputmode="tel" placeholder="Phone" style="flex:none;width:152px;font-size:17px">
-      </div>
-      <button id="addPersonBtn" class="btn btn-secondary btn-block">Add someone to call</button>
-
-      <a class="card" href="tel:17043324387" style="text-decoration:none;color:inherit;border-color:var(--color-accent);padding:var(--space-4);gap:4px">
-        <div style="font-family:var(--font-heading);font-size:24px;color:var(--color-accent-700)">Charlotte A.A. &mdash; 24 hour line</div>
-        <div style="font-size:26px;font-feature-settings:'lnum','tnum'">704&#8209;332&#8209;4387</div>
-        <div style="font-size:16px;color:var(--color-neutral-600)">Metrolina Intergroup. A real person, local, any time of night. Tap to call.</div>
-      </a>
-
-      <a class="card" href="tel:18006624357" style="text-decoration:none;color:inherit;padding:var(--space-4);gap:4px">
-        <div style="font-family:var(--font-heading);font-size:24px;color:var(--color-accent-700)">National helpline</div>
-        <div style="font-size:26px;font-feature-settings:'lnum','tnum'">1&#8209;800&#8209;662&#8209;4357</div>
-        <div style="font-size:16px;color:var(--color-neutral-600)">Free and confidential, every day of the year, English or Spanish. Run by SAMHSA. Tap to call.</div>
-      </a>
-
-      <a class="card" href="tel:988" style="text-decoration:none;color:inherit;padding:var(--space-4);gap:4px">
-        <div style="font-family:var(--font-heading);font-size:24px;color:var(--color-accent-700)">If things feel dark</div>
-        <div style="font-size:26px;font-feature-settings:'lnum','tnum'">988</div>
-        <div style="font-size:16px;color:var(--color-neutral-600)">Call or text. The Suicide &amp; Crisis Lifeline, any time. Tap to call.</div>
-      </a>
-
-      <a class="card" href="sms:988" style="text-decoration:none;color:inherit;padding:var(--space-4);gap:4px">
-        <div style="font-family:var(--font-heading);font-size:24px;color:var(--color-accent-700)">Rather type than talk?</div>
-        <div style="font-size:16px;color:var(--color-neutral-600)">Text 988 and someone will write back. Tap to open a message.</div>
-      </a>
-
-      <p style="font-size:16px;color:var(--color-neutral-600);margin:4px 0 0;text-wrap:pretty">If you ever feel confused, see things that aren&rsquo;t there, or have a seizure, that&rsquo;s a 911 call &mdash; not a wait&#8209;and&#8209;see.</p>
-    </section>
-
-    <div class="hr"></div>
-
-    <!-- Meeting finding is handed off to the people who keep the lists current: A.A.'s
-         own directories. Nothing is cached here, so nothing here can go stale. -->
-    <section style="display:flex;flex-direction:column;gap:var(--space-3)">
-      <div style="text-align:center">
-        <div style="font-size:14px;letter-spacing:.2em;text-transform:uppercase;color:var(--color-accent2-700)">A room, a screen, or the phone</div>
-        <h2 style="font-size:35px;margin:6px 0 0">Find a meeting</h2>
-        <p style="font-size:17px;color:var(--color-neutral-700);margin:8px 0 0;text-wrap:pretty">You can walk into an open meeting without telling anyone you&rsquo;re coming, and leave whenever you like.</p>
-      </div>
-
-      <a class="card" href="https://charlotteaa.org/meetings/" style="text-decoration:none;color:inherit;border-color:var(--color-accent);padding:var(--space-4);gap:4px">
-        <div style="font-family:var(--font-heading);font-size:24px;color:var(--color-accent-700)">Meetings around Charlotte</div>
-        <div style="font-size:16px;color:var(--color-neutral-600)">Metrolina Intergroup&rsquo;s list &mdash; by day, by neighbourhood, on a map. The place to start. Tap to open.</div>
-      </a>
-
-      <a class="card" href="https://www.aa.org/find-aa/north-america" style="text-decoration:none;color:inherit;padding:var(--space-4);gap:4px">
-        <div style="font-family:var(--font-heading);font-size:24px;color:var(--color-accent-700)">Anywhere else you happen to be</div>
-        <div style="font-size:16px;color:var(--color-neutral-600)">A.A.&rsquo;s own directory for the whole of North America &mdash; useful when you&rsquo;re travelling. Tap to open.</div>
-      </a>
-
-      <a class="card" href="https://aa-intergroup.org/meetings/" style="text-decoration:none;color:inherit;padding:var(--space-4);gap:4px">
-        <div style="font-family:var(--font-heading);font-size:24px;color:var(--color-accent-700)">A meeting online, right now</div>
-        <div style="font-size:16px;color:var(--color-neutral-600)">The A.A. Online Intergroup runs meetings around the clock. You can keep your camera off. Tap to open.</div>
-      </a>
-
-      <a class="card" href="https://charlotteaa.org/a-a-telephone-meetings/" style="text-decoration:none;color:inherit;padding:var(--space-4);gap:4px">
-        <div style="font-family:var(--font-heading);font-size:24px;color:var(--color-accent-700)">Charlotte meetings by phone</div>
-        <div style="font-size:16px;color:var(--color-neutral-600)">Local telephone meetings, no app and no camera needed. Tap to open.</div>
-      </a>
-
-      <a class="card" href="https://www.aa.org/meeting-guide-app" style="text-decoration:none;color:inherit;padding:var(--space-4);gap:4px">
-        <div style="font-family:var(--font-heading);font-size:24px;color:var(--color-accent-700)">The Meeting Guide app</div>
-        <div style="font-size:16px;color:var(--color-neutral-600)">A free app from A.A. that finds meetings near wherever you&rsquo;re standing. Tap to open, then Get.</div>
-      </a>
-
-      <p style="font-size:16px;color:var(--color-neutral-600);margin:4px 0 0;text-wrap:pretty">If a room doesn&rsquo;t suit you, that says nothing about the next one. People often try several before one feels like theirs.</p>
-    </section>
-
-    <div class="hr"></div>
-
-    <div id="hintCard" class="card" style="display:none;padding:var(--space-4);flex-direction:column;gap:8px;border-color:var(--color-accent-300)">
-      <div style="font-family:var(--font-heading);font-size:22px">Put this on your home screen</div>
-      <p style="font-size:16px;line-height:1.6;color:var(--color-neutral-700)">In Safari, tap the <strong>Share</strong> button, then <strong>Add to Home Screen</strong>. It becomes a real app &mdash; full screen, no browser bars.</p>
-      <button id="dismissHintBtn" class="btn btn-ghost" style="align-self:flex-start">Done &mdash; hide this</button>
+          <div id="ratePreview" style="font-size:17px;color:var(--color-accent2-700);min-height:26px;font-feature-settings:'lnum','tnum'"></div>
+          <button id="saveRateBtn" class="btn btn-primary btn-block">Save this</button>
+        </div>
+      </section>
     </div>
 
-    <div class="hr"></div>
+    <div id="panel-miles" role="tabpanel" aria-labelledby="tab-miles" style="display:none;flex-direction:column;gap:40px">
 
-    <section style="text-align:center;display:flex;flex-direction:column;gap:10px;align-items:center">
-      <div style="font-size:14px;letter-spacing:.2em;text-transform:uppercase;color:var(--color-accent2-700)">Want something added?</div>
-      <p style="font-size:15px;color:var(--color-neutral-600);text-wrap:pretty">Tap below and tell us what you&rsquo;d like &mdash; we&rsquo;ll push an update to your app.</p>
-      <a class="btn btn-primary" href="mailto:carolinafirearms.assistant@gmail.com?subject=Jimmy%27s%20Journey%20%E2%80%94%20update%20request&amp;body=Hey%2C%20it%27s%20Dad.%20Can%20you%20update%20my%20app%3F%20Here%27s%20what%20I%27d%20like%3A%0A%0A" style="text-decoration:none">Request an update</a>
-    </section>
+      <section>
+        <div style="text-align:center;margin-bottom:var(--space-4)">
+          <div style="font-size:14px;letter-spacing:.2em;text-transform:uppercase;color:var(--color-accent2-700)">The healing, as it happens</div>
+          <h2 style="font-size:35px;margin:6px 0 0">Your body, mending itself</h2>
+          <p style="font-size:16px;color:var(--color-neutral-600);margin:8px 0 0;text-wrap:pretty">Tap any one to read it. Everything you have reached is marked in copper. These come from research on groups of people &mdash; yours may run faster or slower.</p>
+        </div>
+        <div id="healthList" style="display:flex;flex-direction:column"></div>
+        <!-- Everything already reached always shows. What is still ahead starts at two
+             entries so the list reads as a next step rather than a wall; this button
+             adds three more each time it is tapped. -->
+        <button id="moreHealth" class="btn btn-secondary btn-block" style="display:none;margin-top:var(--space-3)"></button>
+      </section>
 
-    <div class="hr"></div>
+      <div class="hr"></div>
 
-    <footer style="text-align:center;padding-bottom:8px">
-      <p style="font-family:var(--font-heading);font-style:italic;font-size:22px;color:var(--color-neutral-700);margin:0">One day at a time.<br>Every one of them counts,<br>and we count every one.<br>Proud of you, Dad.</p>
-      <p style="font-family:var(--font-heading);font-style:italic;font-size:20px;color:var(--color-accent-700);margin:10px 0 0">&mdash;&nbsp;Sully</p>
-    </footer>
+      <section style="display:flex;flex-direction:column;gap:var(--space-3)">
+        <div class="card" id="nextChipCard" style="padding:var(--space-4);gap:10px;border-color:var(--color-accent2-600)">
+          <div style="font-size:14px;letter-spacing:.14em;text-transform:uppercase;color:var(--color-accent2-700)">Working towards</div>
+          <div id="nextChipName" style="font-family:var(--font-heading);font-size:26px;line-height:1.2"></div>
+          <div style="height:16px;border-radius:8px;background:var(--color-neutral-200);overflow:hidden;box-shadow:inset 0 1px 2px rgba(26,37,28,.10)">
+            <div id="nextChipBar" style="height:100%;border-radius:8px;width:0%;transition:width .4s ease"></div>
+          </div>
+          <div id="nextChipSub" style="font-size:17px;color:var(--color-neutral-600);font-feature-settings:'lnum','tnum'"></div>
+        </div>
+        <p style="font-size:16px;line-height:1.6;color:var(--color-neutral-600);margin:6px 0 0;text-wrap:pretty">Sobriety chips started in the 1940s, when a nun in Akron gave every patient leaving her ward a small medallion and asked one thing: if you&rsquo;re going to drink, give it back to me first. A chip isn&rsquo;t a prize. It&rsquo;s something to hold on to on the hard days.</p>
+      </section>
+    </div>
+
+    <div id="panel-steps" role="tabpanel" aria-labelledby="tab-steps" style="display:none;flex-direction:column;gap:40px">
+
+      <!-- The Twelve Steps. The step text itself is A.A.'s, credited below the list and
+           linked back to aa.org; the short plain-English note under each one was written
+           for this app. Marking a step is stored locally in jj_steps and never leaves
+           the phone — it is his own record, not a score anyone else sees. -->
+      <section style="display:flex;flex-direction:column;gap:var(--space-3)">
+        <div style="text-align:center">
+          <div style="font-size:14px;letter-spacing:.2em;text-transform:uppercase;color:var(--color-accent2-700)">One at a time, in order</div>
+          <h2 style="font-size:35px;margin:6px 0 0">The Twelve Steps</h2>
+          <p style="font-size:16px;color:var(--color-neutral-600);margin:8px 0 0;text-wrap:pretty">Tap a step to read it in plain words, and mark it when you&rsquo;ve worked it. Nobody does these to a schedule &mdash; most people do them with a sponsor, and step four onwards is much easier with one.</p>
+        </div>
+
+        <div class="card" style="padding:var(--space-4);gap:10px;border-color:var(--color-accent2-600)">
+          <div style="font-size:14px;letter-spacing:.14em;text-transform:uppercase;color:var(--color-accent2-700)">Where you are</div>
+          <div id="stepNow" style="font-family:var(--font-heading);font-size:26px;line-height:1.2"></div>
+          <div style="height:16px;border-radius:8px;background:var(--color-neutral-200);overflow:hidden;box-shadow:inset 0 1px 2px rgba(26,37,28,.10)">
+            <div id="stepBar" style="height:100%;border-radius:8px;width:0%;background:var(--color-accent2-600);transition:width .4s ease"></div>
+          </div>
+          <div id="stepSub" style="font-size:17px;color:var(--color-neutral-600);font-feature-settings:'lnum','tnum'"></div>
+        </div>
+
+        <div id="stepList" style="display:flex;flex-direction:column"></div>
+
+        <p style="font-size:15px;line-height:1.6;color:var(--color-neutral-500);margin:2px 0 0;text-wrap:pretty">The Twelve Steps are the work of Alcoholics Anonymous World Services, Inc., and are reproduced here for personal use only.</p>
+        <a class="card" href="https://www.aa.org/the-twelve-steps" style="text-decoration:none;color:inherit;padding:var(--space-4);gap:4px">
+          <div style="font-family:var(--font-heading);font-size:24px;color:var(--color-accent-700)">Read them on aa.org</div>
+          <div style="font-size:16px;color:var(--color-neutral-600)">The steps in full, from A.A. itself, alongside the Twelve Traditions. Tap to open.</div>
+        </a>
+      </section>
+    </div>
+
   </div>
+
+  <!-- Bottom tabs. Four destinations, one panel visible at a time. Home keeps the
+       counter and the things he might need in a bad hour; the three long sections that
+       used to sit below it — the money, the healing timeline and the chip, the Twelve
+       Steps — each get a screen of their own, so nothing has to be scrolled past to
+       reach anything else. Fixed to the bottom because that is where his thumb already
+       is, and pine so it reads as the same piece of furniture as the hero. -->
+  <div id="tabBar" role="tablist" aria-label="Sections" style="position:fixed;left:0;right:0;bottom:0;z-index:10;display:flex;background:#16281f;border-top:1px solid rgba(238,243,236,.16);padding-bottom:env(safe-area-inset-bottom, 0px)">
+    <button type="button" role="tab" class="tab" id="tab-home" aria-controls="panel-home" aria-selected="true"><span>Home</span></button>
+    <button type="button" role="tab" class="tab" id="tab-money" aria-controls="panel-money" aria-selected="false"><span>Savings</span></button>
+    <button type="button" role="tab" class="tab" id="tab-miles" aria-controls="panel-miles" aria-selected="false"><span>Milestones</span></button>
+    <button type="button" role="tab" class="tab" id="tab-steps" aria-controls="panel-steps" aria-selected="false"><span class="tabNum">12</span><span>Steps</span></button>
+  </div>
+
 </div>
 
 <script>
@@ -1198,6 +1254,28 @@ input[type=date]{-webkit-appearance:none;appearance:none;background:transparent}
     $('hintCard').style.display = 'none';
   };
 
+  // ---- bottom tabs ----
+  // All four panels stay mounted and tick() keeps painting every one of them, so a
+  // switch is a display flip with nothing to rebuild — and a milestone that lands while
+  // he is on another tab is already dressed by the time he gets to it. The cost of that
+  // is nil: the per-tick work was always guarded by change checks, not by visibility.
+  // Which tab he was last on is deliberately not stored. Home is what opens, every time.
+  var TABS = ['home', 'money', 'miles', 'steps'];
+  function showTab(key) {
+    for (var t = 0; t < TABS.length; t++) {
+      var on = TABS[t] === key;
+      $('panel-' + TABS[t]).style.display = on ? 'flex' : 'none';
+      $('tab-' + TABS[t]).setAttribute('aria-selected', on ? 'true' : 'false');
+    }
+    // The full hero belongs to Home; the other three get the short band instead.
+    $('hero').style.display = key === 'home' ? 'block' : 'none';
+    $('miniTop').style.display = key === 'home' ? 'none' : 'block';
+    window.scrollTo(0, 0);
+  }
+  for (var ti = 0; ti < TABS.length; ti++) {
+    (function (key) { $('tab-' + key).onclick = function () { showTab(key); }; })(TABS[ti]);
+  }
+
   // ---- static labels ----
   $('sinceLabel').textContent = 'Sober since ' + QUIT.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
 
@@ -1251,6 +1329,9 @@ input[type=date]{-webkit-appearance:none;appearance:none;background:transparent}
       $('bigDays').textContent = days;
       $('bgDays').textContent = days;
       $('dayLine').textContent = (days === 1 ? 'day' : 'days');
+      // The short band on the other three tabs carries the same number, written here
+      // rather than on a clock of its own so the two can never disagree.
+      $('miniDays').textContent = days + (days === 1 ? ' day sober' : ' days sober');
       // Same day number the big counter uses, so the line turns over with it and
       // stays put for the rest of the day. No second clock, nothing stored.
       $('dailyText').textContent = DAILY[((days % DAILY.length) + DAILY.length) % DAILY.length];
