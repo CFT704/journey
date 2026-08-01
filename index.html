@@ -111,9 +111,17 @@ input[type=date]{-webkit-appearance:none;appearance:none;background:transparent}
     Seeing this note? You&rsquo;re looking at a <strong>preview</strong> &mdash; the app isn&rsquo;t running yet, so the counter stays hidden. Tap the <strong>Share</strong> button and choose <strong>Safari</strong>. Once the app is really open, this note disappears and your day counter appears.
   </div>
 
-  <section style="background:#16281f;color:#eef3ec;position:relative;overflow:hidden;padding:calc(env(safe-area-inset-top, 0px) + 40px) 24px 36px;text-align:center">
+  <!-- Top padding is 14, not the 40 it was: at 300px the mark carries roughly 60px of
+       its own empty space above the letters (the band the three dots used to sit in,
+       which cannot be cropped out of the viewBox without risking a clipped cap line on
+       some other face), so 40 on top of that read as a hole rather than as breathing
+       room. The safe-area inset stays untouched — that is the notch, not styling. -->
+  <section style="background:#16281f;color:#eef3ec;position:relative;overflow:hidden;padding:calc(env(safe-area-inset-top, 0px) + 14px) 24px 26px;text-align:center">
     <div id="bgDays" aria-hidden="true" style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:var(--font-heading);font-weight:400;font-size:340px;line-height:1;color:var(--color-accent);opacity:.07;font-feature-settings:'lnum','tnum';pointer-events:none;user-select:none;-webkit-user-select:none"></div>
-    <div style="position:relative;max-width:420px;margin:0 auto;display:flex;flex-direction:column;align-items:center;gap:14px;animation:jjfade .7s ease both">
+    <!-- gap is 11, down from 14. The mark carries a lot of its own whitespace at this
+         size, so the stack reads no tighter than it did while giving the milestone bar
+         back the room it needs to land on a 667px-tall screen. -->
+    <div style="position:relative;max-width:420px;margin:0 auto;display:flex;flex-direction:column;align-items:center;gap:11px;animation:jjfade .7s ease both">
       <!-- Two capital J's set in the wordmark face itself, not drawn — so the mark is
            literally the same letterform as the J in "Jimmy's Journey" below it, and
            follows the same fallback chain if Cochin is ever missing. The second J is
@@ -122,14 +130,16 @@ input[type=date]{-webkit-appearance:none;appearance:none;background:transparent}
            Both are anchored at 73 rather than 60, so each J's advance runs 13 units past
            the centre line and the pair closes up by 26. Raising this tightens further;
            60 is the old untightened position, and past about 74 the stems collide.
-           The viewBox stays 0 0 120 120 even though the three dots that used to sit in
-           the top band are gone. Cropping that band looked like free space and is not:
+           The viewBox still STARTS at y=0 even though the three dots that used to sit in
+           that top band are gone. Cropping the top looks like free space and is not:
            where the cap line falls depends entirely on which face resolves, and a crop
            tuned to one font shears the tops off the letters in another — measured at
-           y=5.5 in the last fallback of the chain against y≈24 in Palatino. The mark is
-           made bigger by scaling instead, which cannot clip anything. Sized in CSS
+           y=5.5 in the last fallback of the chain against y≈24 in Palatino. The bottom
+           is a different matter and IS cropped, 120 down to 110: the rule is drawn at a
+           y this file controls and ends at 108.4, so everything past it is dead in every
+           face. That is worth 25px of hero height at the 300px ceiling. Sized in CSS
            rather than width/height attributes so it shrinks on a 320px phone. -->
-      <svg viewBox="0 0 120 120" style="width:100%;max-width:300px;height:auto;display:block" aria-label="Jimmy's Journey mark">
+      <svg viewBox="0 0 120 110" style="width:100%;max-width:300px;height:auto;display:block" aria-label="Jimmy's Journey mark">
         <g fill="var(--color-accent)" style="font-family:var(--font-mark);font-weight:400;font-size:82px">
           <text x="73" y="78" text-anchor="end">J</text>
           <text x="73" y="78" text-anchor="end" transform="translate(120,0) scale(-1,1)">J</text>
@@ -158,7 +168,7 @@ input[type=date]{-webkit-appearance:none;appearance:none;background:transparent}
         <div style="font-size:12px;letter-spacing:.22em;text-transform:uppercase;color:var(--color-accent);margin-bottom:4px">Today is a milestone</div>
         <div id="celebText" style="font-family:var(--font-heading);font-size:27px;color:#eef3ec"></div>
       </div>
-      <div style="width:100%;max-width:320px;margin-top:10px">
+      <div style="width:100%;max-width:320px;margin-top:4px">
         <div style="display:flex;justify-content:space-between;font-size:13.5px;letter-spacing:.07em;text-transform:uppercase;color:rgba(238,243,236,.62);margin-bottom:6px;font-feature-settings:'lnum','tnum'">
           <span id="sinceLabel">Sober since July 15, 2026</span><span id="nextLabel" style="color:var(--color-accent2)"></span>
         </div>

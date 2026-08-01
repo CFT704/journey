@@ -180,8 +180,14 @@ rebuilding DOM each second.
 - **The mark scales as one drawing.** Its `max-width` is 300px and everything inside
   is in viewBox units, so the rule's `stroke-width:2.8` draws about 7px at that
   ceiling against under 3px at the original 118px. That is intended, but it is why
-  the rule reads heavier than the number suggests. The hero is about 750px tall as a
-  result — on a small iPhone the progress bar now sits below the fold.
+  the rule reads heavier than the number suggests.
+- **The hero's vertical budget is spent.** It is ~671px, and the milestone bar ends at
+  645 on a 375×667 screen — 22px of slack, the whole hero landing on one screen. That
+  came from four cuts, not one: the viewBox cropped at the bottom only (120→110, the
+  band below the rule, dead in every face), top padding 40→14, bottom 36→26, stack gap
+  14→11. Anything new added to the hero pushes the bar off the bottom of an SE, so
+  take the space from somewhere rather than appending. The 320×568 phone is already
+  over and always was.
 - **Never crop the mark's viewBox to the letters.** It stays `0 0 120 120`, and the
   dead band at the top left behind by the three dots is dead on purpose. Where the
   cap line falls is a property of whichever face resolves — measured at y=5.5 in the
