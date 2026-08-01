@@ -198,10 +198,14 @@ rebuilding DOM each second.
 - **The mark and wordmark are set in regular, not `--font-heading-weight`.** The SVG
   `<g>` and the `<h1>` both hard-code `font-weight:400`; everything else on the page
   still takes 600 from the token. Changing the token will not move them, by design.
-- **`icon.png` is a raster of the mark and is currently a Palatino render**, taken
-  before the wordmark moved to Cochin. It is internally consistent (all three copies
-  match) but no longer matches the SVG mark letterform. Regenerating it needs a
-  device that actually has Cochin — this container does not.
+- **`icon.png` is a hand-drawn likeness of the Cochin mark, not a render of it.**
+  Cochin is an Apple font and is not on this container, so the icon cannot be
+  produced from the real letterform here. The paths were traced against two renders
+  taken on a device that does have it, anchoring on the rule (`x 8→112 at y=107`) to
+  fix the scale at 4.115px per unit; the working file is not in the repo, but the
+  proportions are recorded in the commit that introduced it. It matches the app's
+  mark in anatomy and weight, not glyph-for-glyph. If it ever needs redrawing, get a
+  fresh reference from the phone first — do not trace it from the old icon.
 
 ## Previewing changes
 
